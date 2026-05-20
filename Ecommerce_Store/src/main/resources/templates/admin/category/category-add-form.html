@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Category</title>
+<!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+	integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+	crossorigin="anonymous"></script> -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div class="row justify-content-center">
+				<div class="col-md-6 col-lg-5">
+					<div class="glass-card p-4 p-md-5">
+						<h2 class="text-center mb-4 fw-bold text-white">
+							<i class="fa-solid fa-folder-plus me-2" style="color:#daa520;"></i> Add Category
+						</h2>
+						
+
+						<form action="/admin/save-category" method="post" enctype="multipart/form-data" class="mt-4">
+							<div class="mb-4">
+								<label class="form-label text-white-50 small fw-bold text-uppercase">Category Name</label>
+								<input type="text" name="categoryName" class="form-control form-control-dark" placeholder="e.g. Proteins" required>
+							</div>
+
+							<div class="mb-4">
+								<label class="form-label text-white-50 small fw-bold text-uppercase d-block">Status</label>
+								<div class="d-flex gap-4 mt-2">
+									<div class="form-check custom-radio">
+										<input class="form-check-input" type="radio" name="isActive" id="active" value="true" checked>
+										<label class="form-check-label text-white" for="active">Active</label>
+									</div>
+									<div class="form-check custom-radio">
+										<input class="form-check-input" type="radio" name="isActive" id="inactive" value="false">
+										<label class="form-check-label text-white" for="inactive">Inactive</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="mb-4">
+								<label class="form-label text-white-50 small fw-bold text-uppercase">Category Image</label>
+								<input type="file" name="file" class="form-control form-control-dark" required>
+							</div>
+
+							<button type="submit" class="btn btn-premium w-100 py-3 mt-3">
+								<i class="fa-solid fa-cloud-arrow-up me-2"></i> Save Category
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.form-control-dark {
+				background: rgba(255, 255, 255, 0.05) !important;
+				border: 1px solid rgba(255, 255, 255, 0.1) !important;
+				border-radius: 12px !important;
+				color: #fff !important;
+				padding: 0.75rem 1rem;
+				transition: all 0.3s ease;
+			}
+			.form-control-dark:focus {
+				background: rgba(255, 255, 255, 0.08) !important;
+				border-color: #daa520 !important;
+				box-shadow: 0 0 0 4px rgba(218, 165, 32, 0.1) !important;
+			}
+			.custom-radio .form-check-input {
+				background-color: rgba(255, 255, 255, 0.1);
+				border-color: rgba(255, 255, 255, 0.2);
+			}
+			.custom-radio .form-check-input:checked {
+				background-color: #daa520;
+				border-color: #daa520;
+			}
+		</style>
+
+		<script>
+		 $(document).ready(function() {
+		        $('#categoryTable').DataTable();
+		    });
+			
+		</script>
+
+	</section>
+
+
+
+
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		crossorigin="anonymous"></script>
+</body>
+</html>

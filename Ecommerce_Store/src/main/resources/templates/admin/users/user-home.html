@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Manage Users — SPSHOP</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div class="glass-card p-4">
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h2 class="fw-bold text-white mb-0">
+						<i class="fa-solid fa-users me-2" style="color:#daa520;"></i> Customer Management
+					</h2>
+				</div>
+
+
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0" style="color: rgba(255,255,255,0.85);">
+						<thead style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+							<tr>
+								<th class="py-3">SL</th>
+								<th class="py-3">Profile</th>
+								<th class="py-3">Name</th>
+								<th class="py-3">Email</th>
+								<th class="py-3">Mobile</th>
+								<th class="py-3">Status</th>
+								<th class="py-3">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="user, count : ${allUsers}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+								<td class="py-3">[[${count.count}]]</td>
+								<td class="py-3">
+									<img th:src="${user.profileImage == 'default.jpg' or user.profileImage == '' ? '/img/users.png' : '/img/profile_img/' + user.profileImage}" 
+										 class="rounded-circle shadow-sm" 
+										 style="width: 45px; height: 45px; object-fit: cover; border: 2px solid rgba(218, 165, 32, 0.2);">
+								</td>
+								<td class="py-3 fw-medium text-white">[[${user.name}]]</td>
+								<td class="py-3">[[${user.email}]]</td>
+								<td class="py-3 text-white-50">[[${user.mobile}]]</td>
+								<td class="py-3">
+									<span th:if="${user.isEnable}" class="badge bg-success-subtle text-success rounded-pill px-3 py-2">Active</span>
+									<span th:unless="${user.isEnable}" class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">Inactive</span>
+								</td>
+								<td class="py-3">
+									<div class="btn-group btn-group-sm">
+										<button class="btn btn-outline-success" th:if="${!user.isEnable}" th:onclick="'updateStatus(' + ${user.id} + ', true)'">
+											<i class="fas fa-check"></i>
+										</button>
+										<button class="btn btn-outline-danger" th:if="${user.isEnable}" th:onclick="'updateStatus(' + ${user.id} + ', false)'">
+											<i class="fas fa-ban"></i>
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			function updateStatus(id, status) {
+				const action = status ? 'activate' : 'deactivate';
+				Swal.fire({
+					title: 'Are you sure?',
+					text: `You want to ${action} this user?`,
+					icon: 'info',
+					showCancelButton: true,
+					confirmButtonColor: status ? '#198754' : '#dc3545',
+					cancelButtonColor: '#6c757d',
+					confirmButtonText: `Yes, ${action}!`,
+					background: '#0a1226',
+					color: '#fff',
+					customClass: { popup: 'glass-card border-0 shadow-lg' }
+				}).then((result) => {
+					if (result.isConfirmed) {
+						window.location.href = `/admin/edit-user-status?status=${status}&id=${id}`;
+					}
+				})
+			}
+		</script>
+
+		<style>
+			.table { --bs-table-bg: transparent; }
+			.badge { font-weight: 600; font-size: 0.75rem; letter-spacing: 0.02em; }
+			.bg-success-subtle { background-color: rgba(25, 135, 84, 0.15) !important; }
+			.bg-danger-subtle { background-color: rgba(220, 53, 69, 0.15) !important; }
+			.btn-outline-success { color: #198754; border-color: rgba(25, 135, 84, 0.3); }
+			.btn-outline-danger { color: #dc3545; border-color: rgba(220, 53, 69, 0.3); }
+			.btn-group .btn:hover { background-color: rgba(255,255,255,0.05); }
+		</style>
+	</section>
+</body>
+</html>

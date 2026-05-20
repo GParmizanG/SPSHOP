@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard — SPSHOP</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div class="glass-card p-5">
+				<h2 class="text-center mb-5 fw-bold text-white" style="letter-spacing: 0.05em;">
+					<i class="fa-solid fa-gauge-high me-2" style="color:#daa520;"></i> Admin Dashboard
+				</h2>
+				
+				<div class="row g-4 justify-content-center">
+					<!-- Manage Category -->
+					<div class="col-md-4">
+						<a href="/admin/category" class="text-decoration-none h-100 d-block">
+							<div class="dashboard-card p-4 text-center h-100">
+								<div class="icon-box mb-3 mx-auto">
+									<i class="fa-solid fa-layer-group fa-2xl"></i>
+								</div>
+								<h4 class="text-white mb-0">Manage Category</h4>
+							</div>
+						</a>
+					</div>
+					
+					<!-- Add Product -->
+					<div class="col-md-4">
+						<a href="/admin/add-product" class="text-decoration-none h-100 d-block">
+							<div class="dashboard-card p-4 text-center h-100">
+								<div class="icon-box mb-3 mx-auto">
+									<i class="fa-solid fa-square-plus fa-2xl"></i>
+								</div>
+								<h4 class="text-white mb-0">Add Product</h4>
+							</div>
+						</a>
+					</div>
+					
+					<!-- Manage Products -->
+					<div class="col-md-4">
+						<a href="/admin/product-list" class="text-decoration-none h-100 d-block">
+							<div class="dashboard-card p-4 text-center h-100">
+								<div class="icon-box mb-3 mx-auto">
+									<i class="fa-solid fa-cube fa-2xl"></i>
+								</div>
+								<h4 class="text-white mb-0">Manage Products</h4>
+							</div>
+						</a>
+					</div>
+					
+					<!-- Manage Orders -->
+					<div class="col-md-4">
+						<a href="/admin/orders" class="text-decoration-none h-100 d-block">
+							<div class="dashboard-card p-4 text-center h-100">
+								<div class="icon-box mb-3 mx-auto">
+									<i class="fa-solid fa-cart-flatbed fa-2xl"></i>
+								</div>
+								<h4 class="text-white mb-0">Manage Orders</h4>
+							</div>
+						</a>
+					</div>
+					
+					<!-- Manage User -->
+					<div class="col-md-4">
+						<a href="/admin/get-all-users" class="text-decoration-none h-100 d-block">
+							<div class="dashboard-card p-4 text-center h-100">
+								<div class="icon-box mb-3 mx-auto">
+									<i class="fa-solid fa-users fa-2xl"></i>
+								</div>
+								<h4 class="text-white mb-0">Manage Users</h4>
+							</div>
+						</a>
+					</div>
+					
+					<!-- Manage Admin -->
+					<div class="col-md-4">
+						<a href="/admin/get-all-admin" class="text-decoration-none h-100 d-block">
+							<div class="dashboard-card p-4 text-center h-100">
+								<div class="icon-box mb-3 mx-auto">
+									<i class="fa-solid fa-user-shield fa-2xl"></i>
+								</div>
+								<h4 class="text-white mb-0">Manage Admins</h4>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.dashboard-card {
+				background: rgba(255, 255, 255, 0.03);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+				border-radius: 24px;
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				position: relative;
+				overflow: hidden;
+			}
+			
+			.dashboard-card:hover {
+				background: rgba(255, 255, 255, 0.06);
+				border-color: rgba(218, 165, 32, 0.3);
+				transform: translateY(-8px);
+				box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+			}
+			
+			.icon-box {
+				width: 70px;
+				height: 70px;
+				background: rgba(218, 165, 32, 0.1);
+				border-radius: 18px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #daa520;
+				transition: all 0.3s ease;
+			}
+			
+			.dashboard-card:hover .icon-box {
+				background: #daa520;
+				color: #000;
+				transform: scale(1.1);
+			}
+			
+			.dashboard-card h4 {
+				font-size: 1.1rem;
+				font-weight: 600;
+				letter-spacing: 0.02em;
+			}
+		</style>
+	</section>
+</body>
+</html>

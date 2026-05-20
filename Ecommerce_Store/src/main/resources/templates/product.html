@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Product</title>
+
+<style>
+.glass-card {
+    background: rgba(10, 18, 38, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 2rem;
+}
+
+.product-search-section {
+    padding: 4rem 0 2rem 0;
+}
+
+.modern-search-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-input-group {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.search-input-group:focus-within {
+    border-color: rgba(218, 165, 32, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 15px rgba(218, 165, 32, 0.1);
+    transform: translateY(-2px);
+}
+
+.search-input-group input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 12px 20px;
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+.btn-search-modern {
+    background: linear-gradient(135deg, #daa520, #b8860b);
+    color: #000 !important;
+    font-weight: 700;
+    border-radius: 16px;
+    padding: 12px 30px;
+    border: none;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+}
+
+.btn-search-modern:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
+    filter: brightness(1.1);
+}
+
+.list-group-item.active {
+    background: linear-gradient(135deg, #daa520, #b8860b) !important;
+    color: #000 !important;
+    font-weight: 700;
+}
+</style>
+</head>
+<body>
+	<section>
+		<div class="product-search-section">
+			<div class="container d-flex justify-content-center">
+				<div class="search-container">
+					<div class="search-trigger" onclick="toggleSearch()">
+						<i class="fa-solid fa-magnifying-glass"></i>
+					</div>
+					<div id="searchWrapper" class="search-input-wrapper">
+						<form action="/products" method="get" id="searchForm">
+							<input type="text" name="search" id="searchInput" placeholder="Search products..." th:value="${param.search}" onblur="hideSearchIfEmpty()">
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="text-center mt-3">
+				<p class="small text-white-50">Popular: <span class="text-white">Creatine</span>, <span class="text-white">Mass Gainer</span>, <span class="text-white">Pre-Workout</span></p>
+			</div>
+		</div>
+
+		<script>
+			function toggleSearch() {
+				const wrapper = document.getElementById('searchWrapper');
+				const input = document.getElementById('searchInput');
+				wrapper.classList.toggle('active');
+				if (wrapper.classList.contains('active')) {
+					input.focus();
+				}
+			}
+
+			function hideSearchIfEmpty() {
+				const wrapper = document.getElementById('searchWrapper');
+				const input = document.getElementById('searchInput');
+				if (input.value === '') {
+					wrapper.classList.remove('active');
+				}
+			}
+
+			// Ensure search bar stays open if there's a search query
+			window.onload = function() {
+				const input = document.getElementById('searchInput');
+				if (input.value !== '') {
+					document.getElementById('searchWrapper').classList.add('active');
+				}
+			}
+		</script>
+		
+		<div class="container-fluid px-4">
+			<div class="row">
+				<!-- Sidebar -->
+				<div class="col-md-2 mb-4">
+					<div class="glass-card">
+						<p class="fs-5 fw-bold mb-3" style="letter-spacing: 0.05em; color: #fff;">Categories</p>
+						<div class="list-group">
+							<a href="/products" class="list-group-item list-group-item-action"
+								th:classappend="${paramValue == ''} ? 'active' : ''"> All Products </a> 
+							
+							<a th:each="category : ${allActiveCategory}" 
+							   th:href="@{'/products?category='+${category.categoryName}}"
+							   th:classappend="${paramValue == category.categoryName} ? 'active' : ''"
+							   class="list-group-item list-group-item-action">[[${category.categoryName}]]</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- Product Grid -->
+				<div class="col-md-10">
+					<div class="glass-card" style="min-height: 600px;">
+						<div class="d-flex justify-content-between align-items-center mb-4">
+							<h3 class="mb-0" style="font-weight: 700; letter-spacing: 0.02em;">
+								[[${paramValue != '' ? paramValue : 'All Products'}]]
+							</h3>
+							<span class="badge" style="background: rgba(218, 165, 32, 0.2); color: #daa520; font-weight: 500;">
+								[[${allActiveProducts.size}]] items found
+							</span>
+						</div>
+
+						<div class="row g-4">
+							<th:block th:if="${allActiveProducts.size > 0}">
+								<div class="col-6 col-md-3" th:each="product : ${allActiveProducts}">
+									<div class="product-card-wrapper position-relative">
+										<a th:href="@{'/product/'+${product.id}}" style="text-decoration:none;">
+											<div class="product-card">
+												<img th:src="@{'/product-img/'+${product.id}}" 
+													 class="product-card-img" th:alt="${product.productTitle}">
+												<div class="product-overlay"></div>
+												<div class="product-card-content">
+													<p class="product-card-title">[[${product.productTitle}]]</p>
+													<p class="product-card-price">&euro;[[${product.discountPrice}]]</p>
+												</div>
+											</div>
+										</a>
+										<!-- Floating Add to Cart -->
+										<div class="product-actions">
+											<th:block th:if="${currentLoggedInUserDetails == null}">
+												<a href="/signin" class="btn-action-cart" title="Login to Add to Cart">
+													<i class="fa-solid fa-cart-plus"></i>
+												</a>
+											</th:block>
+											<th:block th:if="${currentLoggedInUserDetails != null and currentLoggedInUserDetails.role == 'ROLE_USER'}">
+												<button class="btn-action-cart add-to-cart-btn" th:data-id="${product.id}" title="Add to Cart">
+													<i class="fa-solid fa-cart-plus"></i>
+												</button>
+											</th:block>
+										</div>
+									</div>
+								</div>
+							</th:block>
+							
+							<th:block th:unless="${allActiveProducts.size > 0}">
+								<div class="col-12 text-center py-5">
+									<i class="fa-solid fa-box-open mb-3" style="font-size: 4rem; color: rgba(255,255,255,0.1);"></i>
+									<p class="fs-4 text-white-50">No products found matching your criteria.</p>
+									<a href="/products" class="btn btn-outline-light mt-3" style="border-radius: 12px; padding: 10px 25px;">Clear Filters</a>
+								</div>
+							</th:block>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- category side bar end -->
+
+	</section>
+</body>
+</html>

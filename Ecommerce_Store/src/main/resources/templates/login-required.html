@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>SPSHOP | Authentication Required</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+			<div class="glass-card text-center p-5 animate__animated animate__fadeInUp" style="max-width: 600px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+				
+				<div class="mb-4 d-inline-flex justify-content-center align-items-center" style="width: 80px; height: 80px; background: rgba(218, 165, 32, 0.1); border-radius: 20px; border: 1px solid rgba(218, 165, 32, 0.2);">
+					<i class="fa-solid fa-lock" style="font-size: 2.5rem; color: #daa520;"></i>
+				</div>
+				
+				<h2 class="mb-3" style="font-weight: 800; color: #fff; letter-spacing: -0.02em;">Authentication Required</h2>
+				
+				<p class="mb-4" style="color: rgba(255, 255, 255, 0.6); font-size: 1.1rem; line-height: 1.6;">
+					To view our premium products and categories, please register or sign in to your account. It only takes a minute!
+				</p>
+				
+				<div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
+					<a href="/signin" class="btn btn-primary px-4 py-3" style="background: #daa520; border: none; border-radius: 14px; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(218, 165, 32, 0.2);">
+						<i class="fa-solid fa-right-to-bracket me-2"></i>SIGN IN
+					</a>
+					<a href="/register" class="btn btn-outline-light px-4 py-3" style="border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; font-weight: 700; transition: all 0.3s ease; background: rgba(255,255,255,0.02);">
+						<i class="fa-solid fa-user-plus me-2"></i>CREATE ACCOUNT
+					</a>
+				</div>
+				
+				<div class="mt-5 pt-4" style="border-top: 1px solid rgba(255,255,255,0.06);">
+					<a href="/" class="text-decoration-none" style="color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">
+						<i class="fa-solid fa-arrow-left me-2"></i>Back to Home
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			@keyframes fadeInUp {
+				from {
+					opacity: 0;
+					transform: translateY(30px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+			.animate__fadeInUp {
+				animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+			}
+			.btn-primary:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 15px 30px rgba(218, 165, 32, 0.3);
+				background: #ecb21f !important;
+			}
+			.btn-outline-light:hover {
+				background: rgba(255,255,255,0.08) !important;
+				border-color: rgba(255,255,255,0.4);
+				transform: translateY(-2px);
+			}
+		</style>
+	</section>
+</body>
+</html>

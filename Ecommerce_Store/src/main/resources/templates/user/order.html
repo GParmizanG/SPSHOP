@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Checkout — SPSHOP</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div style="background: rgba(10,18,38,0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 2.5rem;">
+				<h2 class="text-center mb-5 fw-bold text-white" style="letter-spacing: 0.05em;">
+					<i class="fa-solid fa-bag-shopping me-2" style="color:#daa520;"></i> Checkout
+				</h2>
+
+				<!-- Success/Error messages -->
+				<th:block th:if="${session.successMsg}">
+					<p class="text-success fw-semibold text-center mt-2">[[${session.successMsg}]]</p>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</th:block>
+				<th:block th:if="${session.errorMsg}">
+					<p class="text-danger fw-semibold text-center mt-2">[[${session.errorMsg}]]</p>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</th:block>				<!-- Single unified form -->
+				<form id="checkoutForm" action="/user/save-order" method="post" th:if="${carts != null and !carts.isEmpty()}">
+					<input type="hidden" name="${_csrf.parameterName}" th:value="${_csrf.token}" th:if="${_csrf != null}" />
+					<div class="row g-5">
+
+						<!-- Left: Shipping Address -->
+						<div class="col-md-7">
+							<div class="p-4" style="background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+								<h4 class="mb-4" style="color: #daa520;">
+									<i class="fa-solid fa-location-dot me-2"></i> Shipping Address
+								</h4>
+								<div class="row g-3">
+									<div class="col-md-6">
+										<label class="form-label text-white-50 small">First Name *</label>
+										<input type="text" name="firstName" class="form-control" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff;" required>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label text-white-50 small">Last Name</label>
+										<input type="text" name="lastName" class="form-control" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff;">
+									</div>
+									<div class="col-md-6">
+										<label class="form-label text-white-50 small">Email Address *</label>
+										<input type="email" name="email" class="form-control" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff;" required>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label text-white-50 small">Mobile Number *</label>
+										<input type="text" name="mobile" id="orderMobile" class="form-control" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff;" value="+372" required>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label text-white-50 small">City *</label>
+										<select name="city" id="citySelect" class="form-select custom-select-dark" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff;" required onchange="updateLockers()">
+											<option value="" disabled selected>Select City</option>
+											<option value="Narva">Narva</option>
+											<option value="Jõhvi">Jõhvi</option>
+											<option value="Sillamäe">Sillamäe</option>
+										</select>
+									</div>
+									<div class="col-md-6">
+										<label class="form-label text-white-50 small">Postal Code *</label>
+										<input type="text" name="pinCode" id="postalCode" class="form-control" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff;" readonly required>
+									</div>
+									<div class="col-12">
+										<label class="form-label text-white-50 small">Parcel Locker (Pakiautomaat) *</label>
+										<select name="address" id="lockerSelect" class="form-select custom-select-dark" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff;" required onchange="updatePostalCode()">
+											<option value="" disabled selected class="text-dark">Select City First</option>
+										</select>
+									</div>
+									<input type="hidden" name="state" value="Estonia">
+								</div>
+							</div>
+						</div>
+
+						<!-- Right: Order Summary + Payment -->
+						<div class="col-md-5">
+							<!-- Order Summary -->
+							<div class="p-4 mb-4" style="background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+								<h4 class="mb-4 fw-bold" style="color: #daa520;">
+									<i class="fa-solid fa-receipt me-2"></i> Order Summary
+								</h4>
+								<table class="table table-borderless mb-0">
+									<tbody>
+										<tr>
+											<td class="text-white-50">Subtotal</td>
+											<td class="text-end fw-semibold text-white">&euro;[[${orderPrice}]]</td>
+										</tr>
+										<tr>
+											<td class="text-white-50">Shipping</td>
+											<td class="text-end fw-bold text-success">FREE</td>
+										</tr>
+										<tr style="border-top: 1px solid rgba(255,255,255,0.1);">
+											<td class="pt-3 fw-bold fs-5 text-white">Grand Total</td>
+											<td class="pt-3 text-end fw-bold fs-5 text-warning">&euro;[[${orderPrice}]]</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+
+							<!-- Payment -->
+							<div class="p-4" style="background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+								<h4 class="mb-4" style="color: #daa520;">
+									<i class="fa-solid fa-credit-card me-2"></i> Payment Method
+								</h4>
+								<div class="mb-4">
+									<div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);">
+										<span><i class="fa-solid fa-credit-card me-2 text-warning"></i> Online Payment (Stripe)</span>
+										<i class="fa-solid fa-circle-check text-warning"></i>
+									</div>
+								</div>
+								
+								<!-- Hidden Payment Type & Transaction ID Holder -->
+								<input type="hidden" name="paymentType" value="Online Payment">
+								<input type="hidden" name="transactionId" id="transactionIdInput">
+								
+								<button type="button" onclick="handleOrderPlacement()" class="btn btn-premium w-100 py-3 shadow-lg">
+									Confirm & Place Order <i class="fa-solid fa-paper-plane ms-2"></i>
+								</button>
+							</div>
+						</div>
+
+					</div>
+				</form>
+
+				<!-- Empty cart message -->
+				<div th:if="${carts == null or carts.isEmpty()}" class="text-center py-5">
+					<i class="fa-solid fa-cart-xmark" style="font-size: 3rem; color: rgba(255,255,255,0.2);"></i>
+					<p class="text-white-50 mt-3">Your cart is empty. <a href="/products" style="color: #daa520;">Continue shopping</a></p>
+				</div>
+
+			</div>
+		</div>
+
+		<script src="https://js.stripe.com/v3/"></script>
+		<script th:inline="javascript">
+			const stripePublicKey = [[${stripePublicKey}]];
+			const stripe = Stripe(stripePublicKey);
+			let elements;
+
+			const mobileInput = document.getElementById('orderMobile');
+			if (mobileInput) {
+				mobileInput.addEventListener('input', function() {
+					if (!this.value.startsWith('+372')) {
+						this.value = '+372';
+					}
+				});
+			}
+
+			const lockersData = {
+				'Narva': [
+					{ name: 'Narva Prisma pakiautomaat', zip: '21008' },
+					{ name: 'Narva Astri Keskuse pakiautomaat', zip: '21005' },
+					{ name: 'Narva Fama Keskuse pakiautomaat', zip: '21006' }
+				],
+				'Jõhvi': [
+					{ name: 'Jõhvi Pargi Keskuse pakiautomaat', zip: '41531' },
+					{ name: 'Jõhvi Selveri pakiautomaat', zip: '41533' },
+					{ name: 'Jõhvi Tsentraali pakiautomaat', zip: '41532' }
+				],
+				'Sillamäe': [
+					{ name: 'Sillamäe Maxima X pakiautomaat', zip: '40231' },
+					{ name: 'Sillamäe Viru pst pakiautomaat', zip: '40232' },
+					{ name: 'Sillamäe Konsumi pakiautomaat', zip: '40233' }
+				]
+			};
+
+			function updateLockers() {
+				const city = document.getElementById('citySelect').value;
+				const lockerSelect = document.getElementById('lockerSelect');
+				const postalCode = document.getElementById('postalCode');
+				
+				lockerSelect.innerHTML = '<option value="" disabled selected>Select Locker</option>';
+				postalCode.value = '';
+
+				if (lockersData[city]) {
+					lockersData[city].forEach(locker => {
+						const option = document.createElement('option');
+						option.value = locker.name;
+						option.textContent = locker.name;
+						option.dataset.zip = locker.zip;
+						lockerSelect.appendChild(option);
+					});
+				}
+			}
+
+			function updatePostalCode() {
+				const lockerSelect = document.getElementById('lockerSelect');
+				const selectedOption = lockerSelect.options[lockerSelect.selectedIndex];
+				const postalCode = document.getElementById('postalCode');
+				
+				if (selectedOption && selectedOption.dataset.zip) {
+					postalCode.value = selectedOption.dataset.zip;
+				}
+			}
+
+			function handleOrderPlacement() {
+				const form = document.getElementById('checkoutForm');
+				if (!form.checkValidity()) {
+					form.reportValidity();
+					return;
+				}
+
+				startStripePayment(form);
+			}
+
+			async function startStripePayment(form) {
+				Swal.fire({
+					title: 'Preparing Secure Payment...',
+					didOpen: () => { Swal.showLoading(); },
+					background: '#0a1226',
+					color: '#fff',
+					allowOutsideClick: false
+				});
+
+				try {
+					const response = await fetch('/api/payment/create-intent', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ amount: [[${totalOrderPrice}]] })
+					});
+					const { clientSecret, error } = await response.json();
+
+					if (error) throw new Error(error);
+
+					showStripeModal(clientSecret, form);
+				} catch (err) {
+					Swal.fire({ icon: 'error', title: 'Payment Error', text: err.message, background: '#0a1226', color: '#fff' });
+				}
+			}
+
+			function showStripeModal(clientSecret, form) {
+				Swal.fire({
+					title: 'SPSHOP Secure Payment',
+					html: `
+						<div class="text-start mt-3">
+							<div class="p-3 mb-3" style="background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+								<p class="small text-white-50 mb-1">Total Amount</p>
+								<h3 class="text-warning mb-0">&euro;[[${totalOrderPrice}]]</h3>
+							</div>
+							<div id="payment-element"></div>
+							<div id="payment-message" class="text-danger small mt-2 d-none"></div>
+						</div>
+					`,
+					showCancelButton: true,
+					confirmButtonText: 'Pay Now',
+					cancelButtonText: 'Cancel',
+					confirmButtonColor: '#daa520',
+					cancelButtonColor: '#30363d',
+					background: '#0a1226',
+					color: '#fff',
+					customClass: { popup: 'glass-card border-0 shadow-lg', confirmButton: 'text-dark fw-bold px-4' },
+					didOpen: () => {
+						const appearance = { theme: 'night', variables: { colorPrimary: '#daa520' } };
+						elements = stripe.elements({ appearance, clientSecret });
+						const paymentElement = elements.create("payment");
+						paymentElement.mount("#payment-element");
+					},
+					preConfirm: async () => {
+						Swal.showLoading();
+						const { paymentIntent, error } = await stripe.confirmPayment({
+							elements,
+							confirmParams: { return_url: window.location.origin + "/user/orders" },
+							redirect: 'if_required'
+						});
+
+						if (error) {
+							const messageContainer = document.querySelector('#payment-message');
+							messageContainer.textContent = error.message;
+							messageContainer.classList.remove('d-none');
+							Swal.hideLoading();
+							return false;
+						}
+						return paymentIntent; // Pass paymentIntent to result
+					}
+				}).then((result) => {
+					if (result.isConfirmed) {
+						Swal.fire({
+							title: 'Payment Successful!',
+							text: 'Redirecting to your orders...',
+							icon: 'success',
+							showConfirmButton: false,
+							timer: 1500,
+							background: '#0a1226',
+							color: '#fff'
+						}).then(() => {
+							// Set the transaction ID before submitting
+							if (result.value && result.value.id) {
+								document.getElementById('transactionIdInput').value = result.value.id;
+							}
+							form.submit();
+						});
+					}
+				});
+			}
+		</script>
+		<style>
+			.custom-select-dark option {
+				background-color: #0a1226 !important;
+				color: #fff !important;
+				padding: 12px !important;
+			}
+			/* Fix for some browsers that show white background on hover */
+			.custom-select-dark:focus {
+				background: rgba(255,255,255,0.08) !important;
+				box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.2) !important;
+			}
+		</style>
+	</section>
+</body>
+</html>
