@@ -78,12 +78,12 @@ class AdminViewControllerTest {
 
         testProduct = new Product();
         testProduct.setId(20L);
-        testProduct.setProductName("Micronized Creatine");
+        testProduct.setProductTitle("Micronized Creatine");
         testProduct.setProductImage("micronized.jpg");
-        testProduct.setPrice(39.99);
+        testProduct.setProductPrice(39.99);
         testProduct.setDiscount(10);
         testProduct.setDiscountPrice(35.99);
-        testProduct.setCategory("Creatine");
+        testProduct.setProductCategory("Creatine");
         testProduct.setIsActive(true);
 
         when(userService.getUserByEmail("admin@gmail.com")).thenReturn(testAdminUser);
@@ -164,7 +164,7 @@ class AdminViewControllerTest {
 
         mockMvc.perform(get("/admin/edit-category/10"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("/admin/category/category-edit"));
+                .andExpect(view().name("/admin/category/category-edit-form"));
     }
 
     @Test
@@ -185,10 +185,10 @@ class AdminViewControllerTest {
     void addProduct_ShouldReturnProductAddForm() throws Exception {
         when(categoryService.getAllCategories()).thenReturn(List.of(testCategory));
 
-        mockMvc.perform(get("/admin/load-product"))
+        mockMvc.perform(get("/admin/add-product"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/product/product-add-form"))
-                .andExpect(model().attributeExists("allCategories"));
+                .andExpect(view().name("/admin/product/add-product"))
+                .andExpect(model().attributeExists("allCategoryList"));
     }
 
     @Test
@@ -200,16 +200,16 @@ class AdminViewControllerTest {
 
         mockMvc.perform(multipart("/admin/save-product")
                 .file(file)
-                .param("productName", "Micronized Creatine")
-                .param("description", "High quality creatine monohydrate")
-                .param("category", "Creatine")
-                .param("price", "39.99")
-                .param("stock", "15")
+                .param("productTitle", "Micronized Creatine")
+                .param("productDescription", "High quality creatine monohydrate")
+                .param("productCategory", "Creatine")
+                .param("productPrice", "39.99")
+                .param("productStock", "15")
                 .param("discount", "10")
                 .param("isActive", "true")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/load-product"));
+                .andExpect(redirectedUrl("/admin/product-list"));
     }
 
     @Test
@@ -217,10 +217,10 @@ class AdminViewControllerTest {
     void products_ShouldReturnProductList() throws Exception {
         when(productService.getAllProducts()).thenReturn(List.of(testProduct));
 
-        mockMvc.perform(get("/admin/products"))
+        mockMvc.perform(get("/admin/product-list"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/product/product-home"))
-                .andExpect(model().attributeExists("allProducts"));
+                .andExpect(view().name("/admin/product/product-list"))
+                .andExpect(model().attributeExists("productList"));
     }
 
     @Test
@@ -230,7 +230,7 @@ class AdminViewControllerTest {
 
         mockMvc.perform(get("/admin/delete-product/20"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/products"));
+                .andExpect(redirectedUrl("/admin/product-list"));
     }
 
     // ── Order Operations
@@ -243,7 +243,7 @@ class AdminViewControllerTest {
 
         mockMvc.perform(get("/admin/orders"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/orders-dashboard"))
+                .andExpect(view().name("/admin/orders/orders-home"))
                 .andExpect(model().attributeExists("allOrders"));
     }
 
@@ -251,15 +251,24 @@ class AdminViewControllerTest {
     // ────────────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("users: должен возвращать страницу со списком пользователей и админов")
+    @DisplayName("users: должен возвращать страницу со списком пользователей")
     void users_ShouldReturnUsersView() throws Exception {
-        when(userService.getUsers("ROLE_USER")).thenReturn(new ArrayList<>());
-        when(userService.getUsers("ROLE_ADMIN")).thenReturn(new ArrayList<>());
+        when(userService.getAllUsersByRole("ROLE_USER")).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/admin/users"))
+        mockMvc.perform(get("/admin/get-all-users"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/user-details-dashboard"))
-                .andExpect(model().attributeExists("userList"))
-                .andExpect(model().attributeExists("adminList"));
+                .andExpect(view().name("/admin/users/user-home"))
+                .andExpect(model().attributeExists("allUsers"));
+    }
+
+    @Test
+    @DisplayName("admins: должен возвращать страницу со списком админов")
+    void admins_ShouldReturnAdminsView() throws Exception {
+        when(userService.getAllUsersByRole("ROLE_ADMIN")).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/admin/get-all-admin"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/admin/users/admin-home"))
+                .andExpect(model().attributeExists("allAdmins"));
     }
 }

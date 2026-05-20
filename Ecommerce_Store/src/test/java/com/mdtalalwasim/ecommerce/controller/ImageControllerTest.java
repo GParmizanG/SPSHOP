@@ -49,7 +49,7 @@ class ImageControllerTest {
 
         mockMvc.perform(get("/product-img/1"))
                 .andExpect(status().isOk())
-                .andExpect(contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
                 .andExpect(content().bytes(mockBytes));
     }
 
@@ -123,7 +123,7 @@ class ImageControllerTest {
 
         mockMvc.perform(get("/category-img/10"))
                 .andExpect(status().isOk())
-                .andExpect(contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
                 .andExpect(content().bytes(mockBytes));
     }
 

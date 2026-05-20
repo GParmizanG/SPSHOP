@@ -88,22 +88,22 @@ class ModelValidationTest {
     @Test
     void product_SetAndGetProductName() {
         Product p = new Product();
-        p.setProductName("Creatine Pow");
-        assertThat(p.getProductName()).isEqualTo("Creatine Pow");
+        p.setProductTitle("Creatine Pow");
+        assertThat(p.getProductTitle()).isEqualTo("Creatine Pow");
     }
 
     @Test
     void product_SetAndGetPrice() {
         Product p = new Product();
-        p.setPrice(45.5);
-        assertThat(p.getPrice()).isEqualTo(45.5);
+        p.setProductPrice(45.5);
+        assertThat(p.getProductPrice()).isEqualTo(45.5);
     }
 
     @Test
     void product_SetAndGetStock() {
         Product p = new Product();
-        p.setStock(10);
-        assertThat(p.getStock()).isEqualTo(10);
+        p.setProductStock(10);
+        assertThat(p.getProductStock()).isEqualTo(10);
     }
 
     @Test
@@ -123,8 +123,8 @@ class ModelValidationTest {
     @Test
     void product_SetAndGetCategory() {
         Product p = new Product();
-        p.setCategory("Pre-workout");
-        assertThat(p.getCategory()).isEqualTo("Pre-workout");
+        p.setProductCategory("Pre-workout");
+        assertThat(p.getProductCategory()).isEqualTo("Pre-workout");
     }
 
     @Test
@@ -250,9 +250,9 @@ class ModelValidationTest {
     @Test
     void order_SetAndGetOrderDate() {
         ProductOrder o = new ProductOrder();
-        LocalDateTime time = LocalDateTime.now();
-        o.setOrderDate(time.toLocalDate());
-        assertThat(o.getOrderDate()).isEqualTo(time.toLocalDate());
+        java.util.Date date = new java.util.Date();
+        o.setOrderDate(date);
+        assertThat(o.getOrderDate()).isEqualTo(date);
     }
 
     @Test
