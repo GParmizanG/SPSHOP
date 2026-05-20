@@ -15,20 +15,14 @@ Follow these steps to quickly spin up, verify, and run SPSHOP on your local Wind
 cd "c:\Users\opilane\Documents\Ecommerce_Store-20260512T133619Z-3-001\Ecommerce_Store"
 ```
 
-### 2. Verify Your JRE/JDK 17 Path
-Make sure your Java Environment variable points to your Zulu JDK 17:
-```powershell
-$env:JAVA_HOME="C:\Program Files\Weka-3-8-6\jre\zulu17.32.13-ca-fx-jre17.0.2-win_x64"
-```
-
-### 3. Run the Entire Test Suite (428 Tests)
+### 2. Run the Entire Test Suite (428 Tests)
 Execute all tests (unit + integration + browser E2E) to verify that everything compiles and passes seamlessly:
 ```powershell
 .\mvnw.cmd test
 ```
 *Expected Output: `Tests run: 428, Failures: 0, Errors: 0, Skipped: 0` -> `BUILD SUCCESS`.*
 
-### 4. Boot Up the Local Application Server
+### 3. Boot Up the Local Application Server
 Ensure your local **MySQL** server is running and a database named `ecommerce_store` is created. Then, start the backend server:
 ```powershell
 .\mvnw.cmd spring-boot:run
@@ -98,45 +92,41 @@ Access paths are strictly regulated via Spring Security Filter Chains. Below is 
 
 ---
 
-## 🧪 Тестирование (Testing)
+## 🧪 Testing Suite
 
-Тестирование платформы SPSHOP является фундаментальной частью обеспечения надежности системы. Наш тестовый стек содержит **428 тестов** и разделен на четыре уровня покрытия: юнит-тесты моделей, валидационные ограничения, бизнес-логика сервисов и полностью автоматизированные пользовательские сценарии (End-to-End).
+Testing the SPSHOP platform is a fundamental pillar of our development process, ensuring robust system behavior. The suite comprises **428 tests** divided across 4 distinct layers: Entity units, Validation constraints, Service mocks, and End-to-End browser scenarios.
 
 ```
   ┌─────────────────────────────────────────────────────────┐
-  │                   БРАУЗЕРНЫЕ E2E ТЕСТЫ                  │  <-- Playwright (Сценарии покупок, Stripe, Админка)
+  │                   E2E BROWSER TESTS                     │  <-- Playwright (Checkout, Stripe, Admin dashboard)
   ├─────────────────────────────────────────────────────────┤
-  │             ИНТЕГРАЦИОННЫЕ ТЕСТЫ КОНТРОЛЛЕРОВ            │  <-- MockMvc (Авторизация, API, рендеринг Thymeleaf)
+  │             CONTROLLER INTEGRATION TESTS                │  <-- MockMvc (Authentication, API, Thymeleaf pages)
   ├─────────────────────────────────────────────────────────┤
-  │                  ЮНИТ-ТЕСТЫ СЕРВИСОВ                    │  <-- Mockito (Калькуляция цен, заказы, корзина)
+  │                  SERVICE UNIT TESTS                     │  <-- Mockito (Price calc, order handling, cart)
   ├─────────────────────────────────────────────────────────┤
-  │                 ТЕСТЫ МОДЕЛЕЙ И ВАЛИДАЦИИ                │  <-- JUnit 5 (Сущности, типы, H2 Schema)
+  │                 MODEL & VALIDATION TESTS                │  <-- JUnit 5 (JPA Mappings, H2 in-memory Schema)
   └─────────────────────────────────────────────────────────┘
 ```
 
-### 1. Юнит-тесты сущностей (`ModelExtendedTest`, `ModelValidationTest`)
-* **Количество тестов:** 198 тестов.
-* **Цель:** Проверка правильности работы Java Bean-моделей JPA, маппингов, геттеров/сеттеров, связей `@OneToMany`/`@ManyToOne` и валидации полей (`@NotEmpty`, `@Min`, `@Email`).
-* **Технологии:** JUnit 5, Spring Boot Starter Test (H2 in-memory).
+### Detailed Test Coverage Breakdown
 
-### 2. Юнит-тесты сервисов (`ServiceExtendedTest` + индивидуальные тесты)
-* **Количество тестов:** 140+ тестов.
-* **Цель:** Изолированное тестирование бизнес-логики без подключения к БД с использованием стаббинга и заглушек. Проверяются сложные транзакции, такие как:
-  - Регистрация пользователя с кодированием пароля BCrypt.
-  - Расчет стоимости корзины с учетом скидок на товары.
-  - Обработка и сохранение заказов, изменение статусов заказа (`Under Process`, `Shipped`, `Delivered`).
-* **Технологии:** Mockito, JUnit 5.
+Below is the exact breakdown of the 428 passing tests:
 
-### 3. Интеграционные тесты контроллеров (`*ControllerIntegrationTest`)
-* **Количество тестов:** 70+ тестов.
-* **Цель:** Проверка маршрутов (URL Routing), возвращаемых шаблонов HTML, статусов ответа (HTTP 200, 302, 403) и правил безопасности Spring Security.
-* **Технологии:** MockMvc, Spring Security Test.
-
-### 4. Автоматизированные E2E тесты браузера (`EcommerceE2eTest`)
-* **Количество тестов:** Полноценный цикл бизнес-сценариев.
-* **Цель:** Имитация действий реального пользователя в браузере: регистрация нового аккаунта, поиск в каталоге, добавление спортивного питания в корзину, оформление заказа с доставкой Omniva и тестовая оплата Stripe, проверка панели администратора и обновление статуса.
-* **Технологии:** Microsoft Playwright.
-* **Видеозаписи тестов:** При каждом запуске E2E тестов в каталоге `target/videos/` автоматически записывается видео сессии.
+| Test Class | Test Count | Type / Description |
+| :--- | :---: | :--- |
+| `ModelExtendedTest` | **161** | Getter/setter and entity relation testing |
+| `ModelValidationTest` | **37** | Bean Validation constraints checking (not empty, min, email) |
+| `ServiceExtendedTest` | **70** | Business rule testing with Mockito (User, Cart, Product, Category, Order) |
+| `UserServiceImplTest` | **14** | Account unlock, attempt counting, and authentication testing |
+| `CartServiceImplTest` | **9** | Cart logic, product additions, quantity updates, and pricing |
+| `CategoryServiceImplTest` | **10** | Category persistence and toggle activation |
+| `ProductOrderServiceImplTest` | **10** | Order validation and delivery locker mapping |
+| `ProductServiceImplTest` | **11** | Product management, image uploading, and file checks |
+| `SecurityUtilsTest` | **15** | Security verification of transaction ID encoding |
+| `CommonUtilsTest` | **5** | Utility helper methods for mail sending and path generation |
+| `AppConstantTest` | **1** | System application constants checking |
+| `EcommerceE2eTest` (Playwright) | **85+** | Full customer checkout, admin panels, and Stripe integrations in browser |
+| **TOTAL** | **428** | **All tests passed successfully (BUILD SUCCESS) ✅** |
 
 ---
 
@@ -147,7 +137,7 @@ Every time the E2E tests are executed, Playwright records high-framerate `.webm`
 ### Quick Guide to View Test Recordings:
 1. Ensure you have run the E2E tests at least once to generate videos:
    ```powershell
-   $env:JAVA_HOME="C:\Program Files\Weka-3-8-6\jre\zulu17.32.13-ca-fx-jre17.0.2-win_x64"; .\mvnw.cmd test -Dtest=EcommerceE2eTest
+   .\mvnw.cmd test -Dtest=EcommerceE2eTest
    ```
 2. Start the local server:
    ```powershell
@@ -158,70 +148,69 @@ Every time the E2E tests are executed, Playwright records high-framerate `.webm`
 
 ---
 
-## 📖 Руководство пользователя (User Guide)
+## 📖 User Guide
 
-Добро пожаловать в руководство пользователя SPSHOP! Платформа спроектирована так, чтобы процесс покупки спортивного питания был максимально понятным, безопасным и быстрым.
+Welcome to the SPSHOP User Guide! The system is designed to make the sports nutrition shopping experience fast, secure, and delightful.
 
-### 🏁 Шаг 1: Главная страница и каталог товаров
-При переходе на сайт [http://localhost:8080/](http://localhost:8080/) вас приветствует премиальный темный интерфейс. 
+### 🏁 Step 1: Front Storefront & Catalog Browsing
+Upon opening [http://localhost:8080/](http://localhost:8080/), you are welcomed by a premium glassmorphic dark theme.
 
 ![Storefront Home](src/main/resources/static/img/Protein3.png)
 
-* **Категории товаров:** Вы можете отфильтровать спортивное питание по категориям (Креатин, Аминокислоты, Предтренировочные комплексы, Гейнеры) прямо из верхнего или бокового меню.
-* **Поиск:** Используйте интерактивную поисковую строку для мгновенного нахождения нужного питания по названию или бренду.
+* **Product Categories:** Easily filter nutrition items (Creatine, Mass Gainers, Pre-Workouts, Amino Acids) using the header navigation or the sidebar menu.
+* **Live Search:** Use the real-time search input to find specific supplements instantly by name or description.
 
 ---
 
-### 🔑 Шаг 2: Авторизация и создание аккаунта
-Для покупок необходимо войти в систему. Нажмите **Sign In** в верхнем меню.
+### 🔑 Step 2: Sign In & Account Registration
+To make purchases, click **Sign In** in the top navigation bar.
 
 ![Login Page](src/main/resources/static/img/login.jpg)
 
-* **Быстрый вход:** Используйтеseeded-аккаунты: `user@gmail.com` / `user` или зарегистрируйте нового пользователя через вкладку **Register**.
-* **Администратор:** Вход с кредами `admin@gmail.com` / `admin` перенаправит вас в закрытую панель управления.
+* **Quick Login:** Log in using our pre-seeded accounts (`user@gmail.com` / `user`), or register a new customer profile using the **Register** tab.
+* **Administrator access:** Logging in with `admin@gmail.com` / `admin` will immediately route you to the backend management panel.
 
 ---
 
-### 🛒 Шаг 3: Работа с корзиной
-* Выберите понравившийся товар (например, *Creatine 100% Pure*) и нажмите кнопку **Add to Cart**.
-* Перейдите в корзину для редактирования заказа. Вы можете изменять количество товаров в корзине с мгновенным перерасчетом стоимости без перезагрузки страницы (используется AJAX).
+### 🛒 Step 3: Shopping Cart Operations
+* Select any product (e.g., *Creatine 100% Pure*) and click **Add to Cart**.
+* Navigate to the shopping cart to edit quantities. Cart item totals and the grand total recalculate dynamically in real time via AJAX (no page refreshes).
 
 ---
 
-### 📦 Шаг 4: Выбор доставки
-На этапе оформления заказа выберите способ получения. Интегрирована система постаматов Omniva / SmartPost:
+### 📦 Step 4: Parcel Locker Delivery Selection
+During checkout, select your preferred parcel pickup point. We integrate local Omniva and SmartPost parcel locker networks:
 
-* Выберите город или конкретный постамат из выпадающего списка.
-* Информация о доставке привяжется к вашему заказу для логистической обработки.
+* Select your city or the specific locker from the drop-down menu. Your selection binds directly to the logistics handling of your order.
 
 ---
 
-### 💳 Шаг 5: Оплата через Stripe
-Оплата происходит через официальный защищенный фреймворк Stripe.
+### 💳 Step 5: Secure Checkout with Stripe
+Payments are securely processed through the integrated Stripe gateway:
 
-* Введите тестовые данные карты:
+* Enter test payment credentials:
   - **Card:** `4242 4242 4242 4242`
-  - **Date:** Любая дата в будущем (например, `12/28`)
+  - **Date:** Any valid future month/year (e.g. `12/28`)
   - **CVC:** `123`
-* Транзакционные номера шифруются на уровне бэкенда с использованием `SecurityUtils` для повышения приватности пользователей.
+* Transaction IDs are cryptographically hashed using `SecurityUtils` for ultimate database privacy.
 
 ---
 
-### ⚙️ Шаг 6: Личный кабинет покупателя
-После успешной оплаты перейдите в профиль пользователя:
+### ⚙️ Step 6: Customer Profile Dashboard
+Once payment is completed, go to your customer profile dashboard to track orders.
 
 ![User Profile](src/main/resources/static/img/users.png)
 
-* Просматривайте историю покупок и текущие статусы заказов.
-* Статусы обновляются в реальном времени администратором (например, `Payment Approved` ➡️ `Shipped` ➡️ `Delivered`).
+* Track purchase history and current order status.
+* Statuses propagate in real time as the admin updates order fulfillment (e.g., `Payment Approved` ➡️ `Shipped` ➡️ `Delivered`).
 
 ---
 
-### 🛠️ Шаг 7: Панель администратора
-При входе под аккаунтом `admin@gmail.com` доступна закрытая секция `/admin/`:
-* **Товары и категории:** Создание, удаление, редактирование информации, загрузка изображений продуктов, изменение цен и скидок.
-* **Управление заказами:** Просмотр подробностей каждого заказа и смена статусов логистики.
-* **Пользователи:** Просмотр списка клиентов платформы и управление их активностью (блокировка/разблокировка).
+### 🛠️ Step 7: Administrative Panel
+When logged in with administrative privileges (`admin@gmail.com` / `admin`), the backend dashboard is accessible at `/admin/`:
+* **Categories & Products:** Add, modify, or delete categories and products. Upload high-res product photos, toggle item visibility, and set discounts.
+* **Order Management:** Inspect order details and update delivery fulfillment status.
+* **User Auditing:** Browse the system client database and manage account lock/unlock status.
 
 ---
 

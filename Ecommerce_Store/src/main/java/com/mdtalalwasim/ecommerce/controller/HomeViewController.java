@@ -62,6 +62,10 @@ public class HomeViewController {
 	
 	//to track which user is login right Now
 	//by default call this method when any request come to this controller because of @ModelAttribut
+	/**
+	 * Binds active user details, cart counts, and active product categories 
+	 * to the model on every incoming request.
+	 */
 	@ModelAttribute 
 	public void getUserDetails(Principal principal, Model model) {
 		if(principal != null) {
@@ -82,6 +86,9 @@ public class HomeViewController {
 		
 	}
 	
+	/**
+	 * Renders the primary store landing page displaying the latest categories and products.
+	 */
 	@GetMapping("/")
 	public String homeIndex(Model model) {
 		
@@ -99,12 +106,18 @@ public class HomeViewController {
 		return "index";
 	}
 	
+	/**
+	 * Shows the user and administrator sign-in page.
+	 */
 	@GetMapping("/signin")
 	public String login() {
 		
 		return "login";
 	}
 	
+	/**
+	 * Shows the customer profile registration form and clears active session messages.
+	 */
 	@GetMapping("/register")
 	public String register(HttpSession session) {
 		session.removeAttribute("successMsg");
@@ -112,6 +125,9 @@ public class HomeViewController {
 		return "register";
 	}
 	
+	/**
+	 * Displays the interactive store catalog, supporting live searching and category filtering.
+	 */
 	@GetMapping("/products")
 	public String product(Model model, 
 			@RequestParam(name= "category", defaultValue = "") String category,
@@ -137,6 +153,9 @@ public class HomeViewController {
 		return "product";
 	}	
 	
+	/**
+	 * Renders full specification details and price breakdowns for a single product.
+	 */
 	@GetMapping("/product/{id}")
 	public String viewProduct(@PathVariable long id, Model model, Principal principal) 
 	{
@@ -148,6 +167,9 @@ public class HomeViewController {
 		return "view-product";
 	}
 	
+	/**
+	 * Validates and persists newly registered user accounts, validating data fields and password strength.
+	 */
 	@PostMapping("/save-user")
 	public String saveUserDetails(@ModelAttribute User user, @RequestParam("file") MultipartFile file, Model model, HttpSession session) throws IOException 
 	{
@@ -221,6 +243,9 @@ public class HomeViewController {
 	}
 	
 	
+	/**
+	 * Initiates the password recovery flow, producing a secure unique token and emailing it to the user.
+	 */
 	@PostMapping("/forgot-password")
 	public String forgetPasswordProcessing(@RequestParam String email, HttpSession session, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException 
 	{
@@ -296,6 +321,9 @@ public class HomeViewController {
 //		
 //	}
 	
+	/**
+	 * Finalizes the secure password reset flow by applying the cryptographically hashed new password.
+	 */
 	@PostMapping("/reset-password")
 	public String resetPasswordOperation(@RequestParam String token, @RequestParam String password, HttpSession session, Model model) 
 	{

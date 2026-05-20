@@ -52,17 +52,17 @@ public class AdminViewController {
 	@Autowired
 	CartService cartService;
 	
-	//to track which user is login right Now
-	//by default call this method when any request come to this controller because of @ModelAttribut
+	/**
+	 * Binds the active authenticated administrator's details, shopping cart size, 
+	 * and active category trees to the model on every incoming request.
+	 */
 	@ModelAttribute 
 	public void getUserDetails(Principal principal, Model model) {
 		if(principal != null) {
 			String currenLoggedInUserEmail = principal.getName();
 			User currentUserDetails = userService.getUserByEmail(currenLoggedInUserEmail);
-			//System.out.println("Current Logged In User is :: ADMIN Controller :: "+currentUserDetails.toString());
 			model.addAttribute("currentLoggedInUserDetails",currentUserDetails);
 			
-			//for showing user cart count
 			Long countCartForUser = cartService.getCounterCart(currentUserDetails.getId());
 			System.out.println("Admin Cart Count :"+countCartForUser);
 			model.addAttribute("countCartForUser", countCartForUser);
@@ -73,21 +73,28 @@ public class AdminViewController {
 		
 	}
 	
+	/**
+	 * Renders the main administrator dashboard and analytics interface.
+	 */
 	@GetMapping("/")
 	public String adminIndex() {
 		
 		return "admin/admin-dashboard";
 	}
 	
-	
-	//CATEGORY-MODULE-START
-	
+	/**
+	 * Shows the category creation form.
+	 */
 	@GetMapping("/add-category")
 	public String addCategory(Model model) {
 		
 		return "admin/category/category-add-form";
 	}
 	
+	/**
+	 * Persists a new product category, checks duplicates, uploads visual banners,
+	 * and updates the active categories.
+	 */
 	@PostMapping("/save-category")
 	public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
 		
@@ -106,7 +113,6 @@ public class AdminViewController {
 			if(ObjectUtils.isEmpty(saveCategory)) {
 				session.setAttribute("errorMsg", "Not Saved! Internal Server Error!");
 			}else {
-				// Also save to file system as backup
 				try {
 					File saveFile = new ClassPathResource("static/img").getFile();
 					Path path = Paths.get(saveFile.getAbsolutePath()+File.separator+"category"+File.separator+file.getOriginalFilename());
@@ -120,13 +126,15 @@ public class AdminViewController {
 		return "redirect:/admin/category";
 	}
 
+	/**
+	 * Displays all categories registered on the platform with local formatting.
+	 */
 	@GetMapping("/category")
 	public String category(Model model) {
 		System.out.println("category:WWWWWWWWW");
 		List<Category> allCategories = categoryService.getAllCategories();
 		System.out.println("category: "+allCategories.toString());
 		for (Category category : allCategories) {
-			//category.getCreatedAt();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy HH:mm:ss");
 			String format = formatter.format(category.getCreatedAt());
 			model.addAttribute("formattedDateTimeCreatedAt",format);
@@ -138,10 +146,11 @@ public class AdminViewController {
 		return "/admin/category/category-home";
 	}
 	
-	
+	/**
+	 * Displays the category editing interface loaded with existing details.
+	 */
 	@GetMapping("/edit-category/{id}")
 	public String editCategoryForm(@PathVariable("id") long id, Model model) {
-		//System.out.println("ID :"+id);
 		Optional<Category> categoryObj = categoryService.findById(id);
 		if(categoryObj.isPresent()) {
 			Category category = categoryObj.get();
@@ -152,7 +161,9 @@ public class AdminViewController {
 		return "/admin/category/category-edit-form";
 	}
 	
-	
+	/**
+	 * Saves edits to existing categories, including name adjustments, toggle operations, and image re-uploads.
+	 */
 	@PostMapping("/update-category")
 	public String udateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
 		System.out.println("Category for UPDATE :"+category.toString());
@@ -160,15 +171,12 @@ public class AdminViewController {
 		Optional<Category> categoryById = categoryService.findById(category.getId());
 		System.out.println("Category obj"+categoryById.toString());
 		
-		
 		if(categoryById.isPresent()) {
 			System.out.println("Present:");
 			Category oldCategory = categoryById.get();
 			System.out.println("Category old Obj "+oldCategory.toString());
 			oldCategory.setCategoryName(category.getCategoryName());
 			oldCategory.setIsActive(category.getIsActive());
-			//oldCategory.setUpdatedAt(LocalDateTime.now());
-			
 			
 			String imageName =  file.isEmpty() ?  oldCategory.getCategoryImage() : file.getOriginalFilename();
 			oldCategory.setCategoryImage(imageName);	
@@ -180,7 +188,6 @@ public class AdminViewController {
 			Category updatedCategory = categoryService.saveCategory(oldCategory);
 			
 			if(!ObjectUtils.isEmpty(updatedCategory)) {
-				//save File as backup
 				if(!file.isEmpty()) {
 					try {
 						File saveFile = new ClassPathResource("static/img").getFile();
@@ -195,20 +202,6 @@ public class AdminViewController {
 				session.setAttribute("errorMsg", "Something wrong on server!");
 			}
 			
-			
-			
-			//OR
-//			if(file!=null) {
-//				String newImageName = file.getOriginalFilename();
-//				System.out.println("File name: "+newImageName);
-//				oldCategory.setCategoryImage(newImageName);
-//			}else {
-//				String oldOriginalImg = oldCategory.getCategoryImage();
-//				System.out.println("File name ELSE: "+oldOriginalImg);
-//				oldCategory.setCategoryImage(oldOriginalImg);
-//			}
-			
-			
 		}else {
 			System.out.println("Not Present:");
 		}
@@ -216,6 +209,9 @@ public class AdminViewController {
 		return "redirect:/admin/category";
 	}
 	
+	/**
+	 * Deletes a registered product category from the system inventory.
+	 */
 	@GetMapping("/delete-category/{id}")
 	public String deleteCategory(@PathVariable("id") long id, HttpSession session) {
 		Boolean deleteCategory = categoryService.deleteCategory(id);
@@ -228,9 +224,9 @@ public class AdminViewController {
 		return "redirect:/admin/category";
 	}
 	
-	
-	//PRODUCT-MODULE-START
-	
+	/**
+	 * Renders the new product registration interface containing current categories catalog.
+	 */
 	@GetMapping("/add-product")
 	public String addProduct(Model model) {
 		List<Category> allCategories = categoryService.getAllCategories();
@@ -238,8 +234,9 @@ public class AdminViewController {
 		return "/admin/product/add-product";
 	}
 	
-
-	
+	/**
+	 * Saves a newly declared product, handles visual asset updates, and initializes standard discounts.
+	 */
 	@PostMapping("/save-product")
 	public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
 		String imageName = file !=null ? file.getOriginalFilename() : "default.png"; 
@@ -269,12 +266,18 @@ public class AdminViewController {
 		return "redirect:/admin/product-list";
 	}
 	
+	/**
+	 * Lists all products currently registered in the database catalog.
+	 */
 	@GetMapping("/product-list")
 	public String productList(Model model) {
 		model.addAttribute("productList", productService.getAllProducts());
 		return "/admin/product/product-list";
 	}
 	
+	/**
+	 * Deletes a target product from the store catalog.
+	 */
 	@GetMapping("/delete-product/{id}")
 	public String deleteProduct(@PathVariable("id") long id, HttpSession session) {
 		Boolean deleteProduct = productService.deleteProduct(id);
@@ -288,6 +291,9 @@ public class AdminViewController {
 		
 	}
 	
+	/**
+	 * Displays the product editing form loaded with existing product details and category trees.
+	 */
 	@GetMapping("/edit-product/{id}")
 	public String editProduct(@PathVariable long id,Model model) {
 		Product product = productService.getProductById(id);
@@ -296,6 +302,9 @@ public class AdminViewController {
 		return "/admin/product/edit-product";
 	}
 	
+	/**
+	 * Commits edits to a selected product, including discount adjustments and product description changes.
+	 */
 	@PostMapping("/update-product")
 	public String updateProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file,
 			HttpSession session, Model model) {
@@ -311,14 +320,12 @@ public class AdminViewController {
 			}
 		}
 
-		// return "redirect:/admin/product/edit-product";
 		return "redirect:/admin/product-list";
 	}
 	
-	
-	
-	//USER-WORK
-	//get all users
+	/**
+	 * Retrieves and lists all registered customers (holding ROLE_USER) for audit.
+	 */
 	@GetMapping("/get-all-users")
 	public String getAllUser(Model model) {
 		
@@ -335,7 +342,9 @@ public class AdminViewController {
 		
 	}
 	
-
+	/**
+	 * Toggles customer profile account state between active and locked/disabled.
+	 */
 	@GetMapping("/edit-user-status")
 	public String editUser(@RequestParam("status") Boolean status, @RequestParam("id") Long id, Model model, HttpSession session) {
 		Boolean updateUserStatus = userService.updateUserStatus(status,id);
@@ -349,11 +358,12 @@ public class AdminViewController {
 		
 	}
 	
-
-
 	@Autowired
 	ProductOrderService productOrderService;
 
+	/**
+	 * Retrieves and lists all platform administrators (holding ROLE_ADMIN) for audit.
+	 */
 	@GetMapping("/get-all-admin")
 	public String getAllAdmin(Model model) {
 		List<User> allAdmins = userService.getAllUsersByRole("ROLE_ADMIN");
@@ -361,6 +371,9 @@ public class AdminViewController {
 		return "/admin/users/admin-home";
 	}
 
+	/**
+	 * Retrieves and renders all system-wide customer billing orders in the admin ledger.
+	 */
 	@GetMapping("/orders")
 	public String getAllOrders(Model model) {
 		List<ProductOrder> allOrders = productOrderService.getAllOrders();
@@ -368,6 +381,9 @@ public class AdminViewController {
 		return "/admin/orders/orders-home";
 	}
 
+	/**
+	 * Updates the shipping / transaction fulfillment timeline status for a customer order.
+	 */
 	@PostMapping("/update-order-status")
 	public String updateOrderStatus(@RequestParam("id") Long id, @RequestParam("status") String status, HttpSession session) {
 		ProductOrder updateOrder = productOrderService.updateOrderStatus(id, status);

@@ -24,6 +24,10 @@ public class ImageController {
     @Autowired
     private CategoryService categoryService;
 
+    /**
+     * Serves product image bytes directly if stored in the database,
+     * or redirects to static resources path as a backup fallback.
+     */
     @GetMapping("/product-img/{id}")
     public ResponseEntity<?> getProductImage(@PathVariable Long id) {
         Product product = productService.getProductById(id);
@@ -45,6 +49,10 @@ public class ImageController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Serves category image bytes directly if stored in the database,
+     * or redirects to static resources path as a backup fallback.
+     */
     @GetMapping("/category-img/{id}")
     public ResponseEntity<?> getCategoryImage(@PathVariable Long id) {
         Category category = categoryService.findById(id).orElse(null);

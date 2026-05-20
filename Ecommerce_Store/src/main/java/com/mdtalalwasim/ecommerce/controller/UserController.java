@@ -45,7 +45,10 @@ public class UserController {
 	@Value("${stripe.api.publicKey}")
 	private String stripePublicKey;
 
-	// Track which user is logged in
+	/**
+	 * Binds the current logged-in user's details, shopping cart size,
+	 * and active categories list to the model on every template request.
+	 */
 	@ModelAttribute
 	public void getUserDetails(Principal principal, Model model) {
 		if (principal != null) {
@@ -61,6 +64,9 @@ public class UserController {
 		model.addAttribute("allActiveCategory", allActiveCategory);
 	}
 
+	/**
+	 * Renders the customer account dashboard loaded with past orders list.
+	 */
 	@GetMapping("/")
 	public String home(Principal principal, Model model) {
 		User user = getLoggedUserDetails(principal);
@@ -69,7 +75,9 @@ public class UserController {
 		return "user/user-home";
 	}
 
-	// ADD TO CART
+	/**
+	 * Handles product addition requests by committing catalog items to the customer's cart session.
+	 */
 	@GetMapping("/add-to-cart")
 	String addToCart(@RequestParam Long productId, Principal principal, HttpSession session) {
 		User user = getLoggedUserDetails(principal);
@@ -82,6 +90,9 @@ public class UserController {
 		return "redirect:/product/" + productId;
 	}
 
+	/**
+	 * Displays the customer's shopping cart page containing all added products and calculated subtotals.
+	 */
 	@GetMapping("/cart")
 	String loadCartPage(Principal principal, Model model, HttpSession session) {
 		User user = getLoggedUserDetails(principal);
@@ -98,12 +109,18 @@ public class UserController {
 		return "/user/cart";
 	}
 
+	/**
+	 * Updates individual items quantity count in the shopping cart (increments/decrements).
+	 */
 	@GetMapping("/cart-quantity-update")
 	public String updateCartQuantity(@RequestParam("symbol") String symbol, @RequestParam("cartId") Long cartId) {
 		cartService.updateCartQuantity(symbol, cartId);
 		return "redirect:/user/cart";
 	}
 
+	/**
+	 * Navigates users to the secure checkout page, binding active cart listings, shipping lockers, and Stripe.
+	 */
 	@GetMapping("/orders")
 	public String orderPage(Principal principal, Model model) {
 		User user = getLoggedUserDetails(principal);
@@ -122,6 +139,9 @@ public class UserController {
 		return "/user/order";
 	}
 
+	/**
+	 * Finalizes and commits the billing checkout request, saving new orders and updating cart contents.
+	 */
 	@PostMapping("/save-order")
 	public String saveOrder(@ModelAttribute ProductOrderRequest orderRequest, Principal principal, HttpSession session) {
 		try {
@@ -139,6 +159,9 @@ public class UserController {
 		return "redirect:/user/";
 	}
 
+	/**
+	 * Resolves active profile entity model from Spring Security user principal context.
+	 */
 	private User getLoggedUserDetails(Principal principal) {
 		String email = principal.getName();
 		return userService.getUserByEmail(email);

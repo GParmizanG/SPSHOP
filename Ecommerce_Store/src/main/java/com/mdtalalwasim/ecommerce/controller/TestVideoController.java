@@ -14,6 +14,10 @@ import java.util.List;
 @Controller
 public class TestVideoController {
 
+	/**
+	 * Renders the E2E test video recordings dashboard, listing all Playwright 
+	 * browser recordings (.webm) sorted chronologically with the latest runs first.
+	 */
     @GetMapping("/test-videos")
     public String showTestVideos(Model model) {
         // Resolve target/videos relative to the JVM working directory (project root)
