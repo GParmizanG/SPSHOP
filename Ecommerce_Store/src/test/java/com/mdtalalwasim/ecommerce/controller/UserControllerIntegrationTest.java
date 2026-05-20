@@ -158,7 +158,8 @@ public class UserControllerIntegrationTest {
                     .param("city", "Narva")
                     .param("state", "Ida-Virumaa")
                     .param("pinCode", "21008")
-                    .param("paymentType", "Cash on Delivery"))
+                    .param("paymentType", "Online Payment")
+                    .param("transactionId", "pi_test_mock_integration_001"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(redirectedUrl("/user/"));
         }

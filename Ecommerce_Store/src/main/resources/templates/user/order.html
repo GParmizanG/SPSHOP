@@ -103,17 +103,15 @@
 								<h4 class="mb-4" style="color: #daa520;">
 									<i class="fa-solid fa-credit-card me-2"></i> Payment Method
 								</h4>
-								<div class="mb-4 d-flex flex-column gap-3">
-									<!-- Online Payment -->
-									<label class="d-flex align-items-center p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
-										<input type="radio" name="paymentMethod" id="online" value="online" class="me-3" checked onchange="selectPayment('online')">
-										<span><i class="fa-solid fa-credit-card me-2 text-warning"></i> Online Payment (Stripe)</span>
-									</label>
-									<!-- Cash on Delivery -->
-									<label class="d-flex align-items-center p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
-										<input type="radio" name="paymentMethod" id="cod" value="cod" class="me-3" onchange="selectPayment('cod')">
-										<span><i class="fa-solid fa-money-bill-wave me-2 text-success"></i> Cash on Delivery</span>
-									</label>
+								<!-- Stripe is the only payment method -->
+								<div class="mb-4">
+									<div class="d-flex align-items-center p-3 rounded-3" style="background: rgba(218,165,32,0.08); border: 1px solid rgba(218,165,32,0.35);">
+										<i class="fa-solid fa-lock me-3 text-warning fs-5"></i>
+										<div>
+											<div class="fw-bold text-white">Secure Card Payment via Stripe</div>
+											<div class="text-white-50 small mt-1">Your card details are processed securely by Stripe. We never store card data.</div>
+										</div>
+									</div>
 								</div>
 								
 								<!-- Hidden Payment Type & Transaction ID Holder -->
@@ -200,30 +198,14 @@
 				}
 			}
 
-			function selectPayment(method) {
-				const paymentTypeInput = document.getElementById('paymentTypeInput');
-				if (method === 'cod') {
-					paymentTypeInput.value = 'Cash on Delivery';
-				} else {
-					paymentTypeInput.value = 'Online Payment';
-				}
-			}
-
 			function handleOrderPlacement() {
 				const form = document.getElementById('checkoutForm');
 				if (!form.checkValidity()) {
 					form.reportValidity();
 					return;
 				}
-
-				const codRadio = document.getElementById('cod');
-				if (codRadio && codRadio.checked) {
-					// Cash on Delivery — submit form directly
-					document.getElementById('paymentTypeInput').value = 'Cash on Delivery';
-					form.submit();
-				} else {
-					startStripePayment(form);
-				}
+				// Always process payment through Stripe
+				startStripePayment(form);
 			}
 
 			async function startStripePayment(form) {

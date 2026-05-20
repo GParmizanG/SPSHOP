@@ -57,7 +57,7 @@ public class EcommerceE2eTest {
 
     @Test
     @Order(1)
-    @DisplayName("E2E 1: Registration -> Login -> Select Product -> Cart -> Checkout (Cash on Delivery) -> Order History")
+    @DisplayName("E2E 1: Registration -> Login -> Select Product -> Cart -> Checkout (Stripe Card Payment) -> Order History")
     void testFullUserPurchaseLifecycle() {
         try {
             String baseUrl = "http://localhost:" + port;
@@ -139,18 +139,21 @@ public class EcommerceE2eTest {
             Locator postalCodeInput = page.locator("input[id='postalCode']");
             assertThat(postalCodeInput.inputValue()).isEqualTo("21008");
 
-            // Choose Cash on Delivery
-            page.click("input[id='cod']");
-
-            // Confirm order
-            page.click("button:has-text('Confirm & Place Order')");
+            // ── 6b. Inject mock Stripe transaction ID and submit form directly ──
+            // In headless E2E mode we cannot drive the real Stripe payment popup,
+            // so we bypass it by setting a test transactionId and submitting the form.
+            page.evaluate("""
+                document.getElementById('paymentTypeInput').value = 'Online Payment';
+                document.getElementById('transactionIdInput').value = 'pi_test_e2e_mock_123456';
+                document.getElementById('checkoutForm').submit();
+            """);
 
             // ── 7. Verify order in customer dashboard ──
             page.waitForURL(baseUrl + "/user/");
             assertThat(page.url()).endsWith("/user/");
 
-            // Check that order list shows the newly created order as In Progress
-            Locator orderStatus = page.locator("td:has-text('In Progress')").first();
+            // Check that order list shows the newly created order as Success (Stripe)
+            Locator orderStatus = page.locator("td:has-text('Success')").first();
             assertThat(orderStatus.isVisible()).isTrue();
         } catch (Throwable t) {
             captureFailureScreenshot();

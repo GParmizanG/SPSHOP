@@ -65,38 +65,17 @@ class ProductOrderServiceImplTest {
         orderRequest.setCity("Москва");
         orderRequest.setState("Московская");
         orderRequest.setPinCode("101000");
-        orderRequest.setPaymentType("Cash on Delivery");
-    }
-
-    // ── saveProductOrder: Cash on Delivery ─────────────────────────────────────────
-
-    @Test
-    @DisplayName("saveProductOrder: Cash on Delivery — статус должен быть 'In Progress'")
-    void saveProductOrder_CashOnDelivery_ShouldSetStatusInProgress() {
-        orderRequest.setPaymentType("Cash on Delivery");
-
-        when(cartRepository.findByUserId(1L)).thenReturn(List.of(testCart));
-        when(productOrderRepository.save(any(ProductOrder.class))).thenAnswer(inv -> {
-            ProductOrder order = inv.getArgument(0);
-            order.setId(1L);
-            return order;
-        });
-        doNothing().when(cartRepository).deleteAll(anyList());
-
-        ProductOrder result = productOrderService.saveProductOrder(1L, orderRequest);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getStatus()).isEqualTo("In Progress");
-        assertThat(result.getPaymentType()).isEqualTo("Cash on Delivery");
-    }
-
-    // ── saveProductOrder: Online Payment ──────────────────────────────────────────
-
-    @Test
-    @DisplayName("saveProductOrder: Online Payment — статус должен быть 'Success'")
-    void saveProductOrder_OnlinePayment_ShouldSetStatusSuccess() {
         orderRequest.setPaymentType("Online Payment");
-        orderRequest.setTransactionId("txn_test_12345");
+        orderRequest.setTransactionId("pi_test_setup_default");
+    }
+
+    // ── saveProductOrder: Online Payment (Stripe) — primary flow ─────────────────────
+
+    @Test
+    @DisplayName("saveProductOrder: Online Payment (Stripe) — status should be 'Success' and transactionId encoded")
+    void saveProductOrder_StripePayment_ShouldSetStatusSuccess_AndEncodeTransactionId() {
+        orderRequest.setPaymentType("Online Payment");
+        orderRequest.setTransactionId("pi_test_12345");
 
         when(cartRepository.findByUserId(1L)).thenReturn(List.of(testCart));
         when(productOrderRepository.save(any(ProductOrder.class))).thenAnswer(inv -> {
@@ -114,7 +93,7 @@ class ProductOrderServiceImplTest {
         assertThat(result.getTransactionId()).isNotNull();
     }
 
-    // ── saveProductOrder: адрес доставки ──────────────────────────────────────────
+    // ── saveProductOrder: shipping address ────────────────────────────────────────
 
     @Test
     @DisplayName("saveProductOrder: должен правильно заполнить адрес доставки")
