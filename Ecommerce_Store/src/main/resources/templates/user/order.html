@@ -103,19 +103,25 @@
 								<h4 class="mb-4" style="color: #daa520;">
 									<i class="fa-solid fa-credit-card me-2"></i> Payment Method
 								</h4>
-								<div class="mb-4">
-									<div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);">
+								<div class="mb-4 d-flex flex-column gap-3">
+									<!-- Online Payment -->
+									<label class="d-flex align-items-center p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+										<input type="radio" name="paymentMethod" id="online" value="online" class="me-3" checked onchange="selectPayment('online')">
 										<span><i class="fa-solid fa-credit-card me-2 text-warning"></i> Online Payment (Stripe)</span>
-										<i class="fa-solid fa-circle-check text-warning"></i>
-									</div>
+									</label>
+									<!-- Cash on Delivery -->
+									<label class="d-flex align-items-center p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); cursor: pointer;">
+										<input type="radio" name="paymentMethod" id="cod" value="cod" class="me-3" onchange="selectPayment('cod')">
+										<span><i class="fa-solid fa-money-bill-wave me-2 text-success"></i> Cash on Delivery</span>
+									</label>
 								</div>
 								
 								<!-- Hidden Payment Type & Transaction ID Holder -->
-								<input type="hidden" name="paymentType" value="Online Payment">
+								<input type="hidden" name="paymentType" id="paymentTypeInput" value="Online Payment">
 								<input type="hidden" name="transactionId" id="transactionIdInput">
 								
 								<button type="button" onclick="handleOrderPlacement()" class="btn btn-premium w-100 py-3 shadow-lg">
-									Confirm & Place Order <i class="fa-solid fa-paper-plane ms-2"></i>
+									Confirm &amp; Place Order <i class="fa-solid fa-paper-plane ms-2"></i>
 								</button>
 							</div>
 						</div>
@@ -194,6 +200,15 @@
 				}
 			}
 
+			function selectPayment(method) {
+				const paymentTypeInput = document.getElementById('paymentTypeInput');
+				if (method === 'cod') {
+					paymentTypeInput.value = 'Cash on Delivery';
+				} else {
+					paymentTypeInput.value = 'Online Payment';
+				}
+			}
+
 			function handleOrderPlacement() {
 				const form = document.getElementById('checkoutForm');
 				if (!form.checkValidity()) {
@@ -201,7 +216,14 @@
 					return;
 				}
 
-				startStripePayment(form);
+				const codRadio = document.getElementById('cod');
+				if (codRadio && codRadio.checked) {
+					// Cash on Delivery — submit form directly
+					document.getElementById('paymentTypeInput').value = 'Cash on Delivery';
+					form.submit();
+				} else {
+					startStripePayment(form);
+				}
 			}
 
 			async function startStripePayment(form) {
