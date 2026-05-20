@@ -9,6 +9,7 @@ import com.mdtalalwasim.ecommerce.service.CategoryService;
 import com.mdtalalwasim.ecommerce.service.ProductService;
 import com.mdtalalwasim.ecommerce.service.UserService;
 import com.mdtalalwasim.ecommerce.service.ProductOrderService;
+import com.mdtalalwasim.ecommerce.service.CommonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,9 @@ class AdminViewControllerTest {
 
     @MockBean
     private ProductOrderService productOrderService;
+
+    @MockBean(name = "commonServiceImpl")
+    private CommonService commonService;
 
     private Category testCategory;
     private Product testProduct;

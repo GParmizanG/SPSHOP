@@ -38,7 +38,11 @@ public class CommonUtils {
 
 	public static String generateUrl(HttpServletRequest request) {
 		String fullUrl = request.getRequestURL().toString();
-		return fullUrl.replace(request.getServletPath(), "");
+		String servletPath = request.getServletPath();
+		if ("/".equals(servletPath)) {
+			return fullUrl.endsWith("/") ? fullUrl.substring(0, fullUrl.length() - 1) : fullUrl;
+		}
+		return fullUrl.replace(servletPath, "");
 	}
 
 	
