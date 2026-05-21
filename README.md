@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🏛️ SPSHOP — Sports Nutrition E-Commerce Platform
 
 SPSHOP is an advanced, premium e-commerce platform built with **Spring Boot 3.x**, **Spring Security**, **Hibernate/JPA**, **MySQL**, and integrated with **Stripe** payment gateways. 
