@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Manage Admins — SPSHOP</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div class="glass-card p-4">
+				<h2 class="text-center mb-4 fw-bold text-white">
+					<i class="fa-solid fa-user-shield me-2" style="color:#daa520;"></i> List of Administrators
+				</h2>
+
+				<!-- Success/Error messages -->
+				<th:block th:if="${session.successMsg}">
+					<p class="text-success fw-semibold text-center">[[${session.successMsg}]]</p>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</th:block>
+				<th:block th:if="${session.errorMsg}">
+					<p class="text-danger fw-semibold text-center">[[${session.errorMsg}]]</p>
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</th:block>
+
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0" style="color: rgba(255,255,255,0.85);">
+						<thead style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+							<tr>
+								<th class="py-3">SL</th>
+								<th class="py-3">Profile</th>
+								<th class="py-3">Name</th>
+								<th class="py-3">Email</th>
+								<th class="py-3">Mobile</th>
+								<th class="py-3">Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="admin, count : ${allAdmins}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+								<td class="py-3 text-white">[[${count.count}]]</td>
+								<td class="py-3">
+									<div class="profile-img-container">
+										<img th:src="${admin.profileImage == 'default.jpg' or admin.profileImage == '' ? '/img/users.png' : '/img/profile_img/' + admin.profileImage}" 
+											 class="rounded-circle" style="width: 45px; height: 45px; object-fit: cover; border: 2px solid rgba(218, 165, 32, 0.2);">
+									</div>
+								</td>
+								<td class="py-3 fw-medium text-white">[[${admin.name}]]</td>
+								<td class="py-3 text-white">[[${admin.email}]]</td>
+								<td class="py-3 text-white">[[${admin.mobile}]]</td>
+								<td class="py-3">
+									<span th:if="${admin.isEnable}" class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" style="font-size: 0.75rem;">Active</span>
+									<span th:unless="${admin.isEnable}" class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill" style="font-size: 0.75rem;">Inactive</span>
+								</td>
+							</tr>
+							<tr th:if="${allAdmins == null or allAdmins.isEmpty()}">
+								<td colspan="7" class="text-center py-5 text-white">No other administrators found.</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.table {
+				--bs-table-bg: transparent;
+				--bs-table-hover-bg: rgba(255, 255, 255, 0.02);
+			}
+			.badge {
+				letter-spacing: 0.03em;
+				font-weight: 600;
+			}
+			.bg-success-subtle { background-color: rgba(25, 135, 84, 0.15) !important; }
+			.bg-danger-subtle { background-color: rgba(220, 53, 69, 0.15) !important; }
+		</style>
+	</section>
+</body>
+</html>
