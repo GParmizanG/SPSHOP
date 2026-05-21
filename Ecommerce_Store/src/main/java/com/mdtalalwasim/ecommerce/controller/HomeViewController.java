@@ -211,16 +211,23 @@ public class HomeViewController {
 		{
 			if(!file.isEmpty()) 
 			{
-				//get path to static/img directory
-				File saveFile =new ClassPathResource("static/img").getFile();
-				System.out.println("SaveFile is: "+saveFile);
-				
-				//full-path
-				Path path = Paths.get(saveFile.getAbsolutePath()+File.separator+"profile_img"+File.separator+file.getOriginalFilename());
-				System.out.println("Path for Profile Image :"+path);
-				
-				//now
-				Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				try {
+					//get path to static/img directory
+					File saveFile = new ClassPathResource("static/img").getFile();
+					System.out.println("SaveFile is: " + saveFile);
+					
+					//full-path
+					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator + file.getOriginalFilename());
+					System.out.println("Path for Profile Image :" + path);
+					
+					// Ensure parent directory exists
+					Files.createDirectories(path.getParent());
+					
+					//now
+					Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				} catch (Exception e) {
+					System.out.println("Profile image file system save failed: " + e.getMessage());
+				}
 			}
 			session.setAttribute("successMsg", "User Registered Successfully");
 			return "redirect:/signin?registered=true";
