@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>My Profile — SPSHOP</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div class="row g-5">
+				<!-- Left Column: Profile Card -->
+				<div class="col-lg-4">
+					<div class="glass-card text-center p-4">
+						<div class="mb-4">
+							<div class="position-relative d-inline-block">
+								<img th:src="${currentLoggedInUserDetails.profileImage == null || currentLoggedInUserDetails.profileImage == '' || currentLoggedInUserDetails.profileImage == 'users.png' || currentLoggedInUserDetails.profileImage == 'default.jpg' ? '/img/users.png' : '/img/profile_img/' + currentLoggedInUserDetails.profileImage}" 
+									 class="rounded-circle border border-warning border-3 p-1" 
+									 style="width: 150px; height: 150px; object-fit: cover; background: rgba(255,255,255,0.05);">
+								<span class="position-absolute bottom-0 end-0 badge bg-success rounded-circle p-3" style="border: 4px solid #060e1f;">
+									<i class="fa-solid fa-check"></i>
+								</span>
+							</div>
+						</div>
+						
+						<h3 class="fw-bold text-white mb-1">[[${currentLoggedInUserDetails.name}]]</h3>
+						<p th:if="${currentLoggedInUserDetails.role == 'ROLE_ADMIN'}" class="text-danger small text-uppercase fw-bold mb-4" style="letter-spacing: 0.1em;">System Administrator</p>
+						<p th:unless="${currentLoggedInUserDetails.role == 'ROLE_ADMIN'}" class="text-warning small text-uppercase fw-bold mb-4" style="letter-spacing: 0.1em;">Loyal Customer</p>
+						
+						<div class="text-start space-y-3 mt-4">
+							<div class="d-flex align-items-center gap-3 p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+								<div class="icon-box text-warning"><i class="fa-solid fa-envelope"></i></div>
+								<div>
+									<p class="small text-white-50 mb-0">Email Address</p>
+									<p class="text-white fw-medium mb-0">[[${currentLoggedInUserDetails.email}]]</p>
+								</div>
+							</div>
+							<div class="d-flex align-items-center gap-3 p-3 rounded-4 mt-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+								<div class="icon-box text-warning"><i class="fa-solid fa-phone"></i></div>
+								<div>
+									<p class="small text-white-50 mb-0">Phone Number</p>
+									<p class="text-white fw-medium mb-0">[[${currentLoggedInUserDetails.mobile}]]</p>
+								</div>
+							</div>
+						</div>
+
+						<a href="/logout" class="btn btn-outline-danger w-100 py-3 mt-5" style="border-radius: 16px;">
+							<i class="fa-solid fa-right-from-bracket me-2"></i> Sign Out
+						</a>
+					</div>
+				</div>
+
+				<!-- Right Column: Order History -->
+				<div class="col-lg-8">
+					<div class="glass-card p-4">
+						<div class="d-flex justify-content-between align-items-center mb-4">
+							<h4 class="fw-bold text-white mb-0">
+								<i class="fa-solid fa-clock-rotate-left me-2 text-warning"></i> Recent Orders
+							</h4>
+							<span class="badge bg-warning text-dark px-3 py-2 rounded-pill">[[${orders.size()}]] Orders Total</span>
+						</div>
+
+						<div th:if="${orders.isEmpty()}" class="text-center py-5">
+							<div class="mb-3 text-white-50 opacity-25">
+								<i class="fa-solid fa-box-open" style="font-size: 4rem;"></i>
+							</div>
+							<h5 class="text-white">No orders found</h5>
+							<p class="text-white-50">You haven't placed any orders yet.</p>
+							<a href="/products" class="btn btn-premium mt-3">Start Shopping</a>
+						</div>
+
+						<div th:unless="${orders.isEmpty()}" class="table-responsive">
+							<table class="table table-hover align-middle">
+								<thead>
+									<tr style="border-bottom: 2px solid rgba(255,255,255,0.05);">
+										<th class="py-3 text-white-50 small text-uppercase">Order ID</th>
+										<th class="py-3 text-white-50 small text-uppercase">Date</th>
+										<th class="py-3 text-white-50 small text-uppercase">Items</th>
+										<th class="py-3 text-white-50 small text-uppercase">Status</th>
+										<th class="py-3 text-white-50 small text-uppercase text-end">Total</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="order : ${orders}" style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+										<td class="py-4 fw-bold text-white">
+											#[[${order.orderId != null && order.orderId.length() >= 8 ? #strings.substring(order.orderId, 0, 8) : order.orderId}]]
+										</td>
+										<td class="py-4 text-white-50 small">
+											[[${order.orderDate != null ? #dates.format(order.orderDate, 'dd MMM yyyy') : 'N/A'}]]
+										</td>
+										<td class="py-4">
+											<div class="d-flex align-items-center gap-2" th:if="${order.product != null}">
+												<img th:src="@{'/img/product_image/'+${order.product.productImage}}" 
+													 class="rounded-2" style="width: 35px; height: 35px; object-fit: cover;">
+												<span class="text-white small">[[${order.product.productTitle}]] <small class="text-white-50">(x[[${order.quantity}]])</small></span>
+											</div>
+											<span th:unless="${order.product != null}" class="text-white-50 small">Product unavailable</span>
+										</td>
+										<td class="py-4">
+											<span class="badge rounded-pill px-3 py-2" 
+												  th:classappend="${order.status == 'Delivered' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'}"
+												  style="font-size: 0.7rem;">[[${order.status}]]</span>
+										</td>
+										<td class="py-4 text-end fw-bold text-warning">
+											&euro;[[${order.price != null ? order.price * (order.quantity != null ? order.quantity : 1) : '0.00'}]]
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.icon-box {
+				width: 40px;
+				height: 40px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: rgba(218, 165, 32, 0.1);
+				border-radius: 12px;
+				font-size: 1.1rem;
+			}
+			.table-hover tbody tr:hover {
+				background: rgba(255,255,255,0.02) !important;
+			}
+		</style>
+	</section>
+</body>
+</html>

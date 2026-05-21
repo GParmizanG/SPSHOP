@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Categories — SPSHOP</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div class="glass-card p-4">
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h2 class="fw-bold text-white mb-0">
+						<i class="fa-solid fa-layer-group me-2" style="color:#daa520;"></i> Categories
+					</h2>
+					<a th:href="@{'/admin/add-category'}" class="btn btn-premium px-4">
+						<i class="fa-solid fa-plus me-1"></i> Add Category
+					</a>
+				</div>
+
+				<!-- Notification Fallback -->
+				<div th:if="${session.successMsg}" class="alert bg-success-subtle text-success border-0 mb-4 py-3" style="border-radius: 16px;">
+					<i class="fa-solid fa-circle-check me-2"></i> [[${session.successMsg}]]
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</div>
+				<div th:if="${session.errorMsg}" class="alert bg-danger-subtle text-danger border-0 mb-4 py-3" style="border-radius: 16px;">
+					<i class="fa-solid fa-circle-exclamation me-2"></i> [[${session.errorMsg}]]
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</div>
+
+				<div class="table-responsive">
+					<table id="categoryTable" class="table table-hover align-middle mb-0" style="color: rgba(255,255,255,0.85);">
+						<thead style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+							<tr>
+								<th class="py-3">ID</th>
+								<th class="py-3">Icon/Image</th>
+								<th class="py-3">Category Name</th>
+								<th class="py-3">Status</th>
+								<th class="py-3">Created Date</th>
+								<th class="py-3">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="category, count: ${allCategoryList}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+								<td class="py-3">[[${category.id}]]</td>
+								<td class="py-3">
+									<img th:src="@{'/img/category/'+${category.categoryImage}}" 
+										 class="rounded-3 shadow-sm" 
+										 style="width: 50px; height: 50px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
+								</td>
+								<td class="py-3 fw-medium text-white">[[${category.categoryName}]]</td>
+								<td class="py-3">
+									<span th:if="${category.isActive}" class="badge bg-success-subtle text-success rounded-pill px-3 py-2">Active</span>
+									<span th:unless="${category.isActive}" class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2">Inactive</span>
+								</td>
+								<td class="py-3 text-white-50 small">[[${formattedDateTimeCreatedAt}]]</td>
+								<td class="py-3">
+									<div class="btn-group btn-group-sm">
+										<a th:href="@{'/admin/edit-category/'+${category.id}}" class="btn btn-outline-warning">
+											<i class="fa-solid fa-pen-to-square"></i>
+										</a>
+										<button class="btn btn-outline-danger" th:onclick="'deleteCategory(' + ${category.id} + ')'">
+											<i class="fa-solid fa-trash"></i>
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.table { --bs-table-bg: transparent; }
+			.badge { font-weight: 600; font-size: 0.75rem; letter-spacing: 0.02em; }
+			.bg-success-subtle { background-color: rgba(25, 135, 84, 0.15) !important; }
+			.bg-danger-subtle { background-color: rgba(220, 53, 69, 0.15) !important; }
+			.btn-outline-warning { color: #daa520; border-color: rgba(218, 165, 32, 0.3); }
+			.btn-outline-warning:hover { background-color: #daa520; color: #000; }
+			.btn-outline-danger { color: #dc3545; border-color: rgba(220, 53, 69, 0.3); }
+			.btn-group .btn:hover { box-shadow: none; }
+			
+			/* DataTable customization */
+			.dataTables_wrapper { color: rgba(255,255,255,0.6) !important; margin-top: 1rem; }
+			.dataTables_length select, .dataTables_filter input {
+				background: rgba(255,255,255,0.05) !important;
+				border: 1px solid rgba(255,255,255,0.1) !important;
+				color: #fff !important;
+				border-radius: 8px;
+				padding: 4px 8px;
+			}
+			.dataTables_info { color: rgba(255,255,255,0.5) !important; }
+			.paginate_button { color: #fff !important; }
+		</style>
+
+		<script>
+			function deleteCategory(id) {
+				Swal.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#dc3545',
+					cancelButtonColor: '#6c757d',
+					confirmButtonText: 'Yes, delete it!',
+					cancelButtonText: 'Cancel',
+					background: '#0a1226',
+					color: '#fff',
+					customClass: {
+						popup: 'glass-card border-0 shadow-lg'
+					}
+				}).then((result) => {
+					if (result.isConfirmed) {
+						window.location.href = '/admin/delete-category/' + id;
+					}
+				})
+			}
+
+			$(document).ready(function() {
+				$('#categoryTable').DataTable({
+					"pageLength": 10,
+					"language": {
+						"search": "_INPUT_",
+						"searchPlaceholder": "Search category..."
+					}
+				});
+			});
+		</script>
+	</section>
+</body>
+</html>

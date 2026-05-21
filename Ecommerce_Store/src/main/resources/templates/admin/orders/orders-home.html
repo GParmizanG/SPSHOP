@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>Manage Orders — SPSHOP</title>
+</head>
+<body>
+	<section>
+		<div class="container py-5">
+			<div class="glass-card p-4">
+				<h2 class="fw-bold text-white mb-4">
+					<i class="fa-solid fa-cart-flatbed me-2" style="color:#daa520;"></i> Customer Orders
+				</h2>
+
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0" style="color: rgba(255,255,255,0.85);">
+						<thead style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+							<tr>
+								<th class="py-3">Order ID</th>
+								<th class="py-3">Date</th>
+								<th class="py-3">Customer</th>
+								<th class="py-3">Product</th>
+								<th class="py-3">Price</th>
+								<th class="py-3">Qty</th>
+								<th class="py-3">Status</th>
+								<th class="py-3">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="order : ${allOrders}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+								<td class="py-3 small text-white-50">#[[${order.orderId.substring(0,8)}]]</td>
+								<td class="py-3 small">[[${#dates.format(order.orderDate, 'dd-MM-yyyy')}]]</td>
+								<td class="py-3 fw-medium text-white">[[${order.orderAddress.firstName + ' ' + order.orderAddress.lastName}]]</td>
+								<td class="py-3">[[${order.product.productTitle}]]</td>
+								<td class="py-3 fw-semibold">&euro;[[${order.price}]]</td>
+								<td class="py-3">[[${order.quantity}]]</td>
+								<td class="py-3">
+									<span class="badge" th:classappend="${order.status == 'Delivered'} ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning'" 
+										  style="border-radius: 50px; padding: 0.4rem 1rem;">[[${order.status}]]</span>
+								</td>
+								<td class="py-3">
+									<form action="/admin/update-order-status" method="post" class="d-flex gap-2">
+										<input type="hidden" name="id" th:value="${order.id}">
+										<select name="status" class="form-select form-select-dark form-select-sm" style="width: 130px;">
+											<option value="In Progress" th:selected="${order.status == 'In Progress'}">In Progress</option>
+											<option value="Order Received" th:selected="${order.status == 'Order Received'}">Order Received</option>
+											<option value="Packed" th:selected="${order.status == 'Packed'}">Packed</option>
+											<option value="Shipped" th:selected="${order.status == 'Shipped'}">Shipped</option>
+											<option value="Delivered" th:selected="${order.status == 'Delivered'}">Delivered</option>
+											<option value="Cancelled" th:selected="${order.status == 'Cancelled'}">Cancelled</option>
+										</select>
+										<button type="submit" class="btn btn-sm btn-outline-warning">Update</button>
+									</form>
+								</td>
+							</tr>
+							<tr th:if="${allOrders == null or allOrders.isEmpty()}">
+								<td colspan="7" class="text-center py-5 text-white-50">
+									<i class="fa-solid fa-folder-open d-block mb-2 fs-1" style="opacity: 0.2;"></i>
+									No orders found yet.
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.table { --bs-table-bg: transparent; }
+			.badge { font-weight: 600; font-size: 0.75rem; letter-spacing: 0.02em; }
+			.bg-warning-subtle { background-color: rgba(255, 193, 7, 0.1) !important; }
+		</style>
+	</section>
+</body>
+</html>

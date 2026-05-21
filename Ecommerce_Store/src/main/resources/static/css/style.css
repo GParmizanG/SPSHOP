@@ -1,0 +1,976 @@
+@charset "UTF-8";
+
+.custom-card-shadow{
+	box-shadow: 0 0 10px 0 rgba(0,0,0,0.4);
+}
+
+/* ========================================
+   CATEGORY CARDS — Modern glassmorphism
+   ======================================== */
+.category-card {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	border-radius: 20px;
+	overflow: hidden;
+	cursor: pointer;
+	background: #0a0f1a;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+	            box-shadow 0.35s ease,
+	            border-color 0.35s ease;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+	margin-bottom: 0;
+}
+
+.category-card:hover {
+	transform: translateY(-8px);
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5),
+	            0 0 20px rgba(218, 165, 32, 0.15);
+	border-color: rgba(218, 165, 32, 0.35);
+}
+
+.category-card .category-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	border-radius: 0;
+	border: none;
+	box-shadow: none;
+	transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+	            filter 0.5s ease;
+	filter: brightness(0.85);
+}
+
+.category-card:hover .category-img {
+	transform: scale(1.1);
+	filter: brightness(1);
+}
+
+/* Dark gradient overlay — bottom fade for text */
+.category-card .category-overlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 60%;
+	background: linear-gradient(to top,
+		rgba(0, 0, 0, 0.85) 0%,
+		rgba(0, 0, 0, 0.4) 45%,
+		transparent 100%);
+	pointer-events: none;
+}
+
+/* Category title */
+.category-card .category-title {
+	position: absolute;
+	bottom: 14px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	font-weight: 600;
+	font-size: 0.85rem;
+	color: #ffffff;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	pointer-events: none;
+	margin: 0;
+	padding: 0 8px;
+}
+
+/* ========================================
+   PRODUCT CARDS — Modern glassmorphism
+   ======================================== */
+.product-card {
+    background: #060c1c; /* Deep dark theme to match navbar */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s ease;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(218, 165, 32, 0.3);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+}
+
+.product-card-img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    background: #000;
+}
+
+.product-card:hover .product-card-img {
+    transform: scale(1.1);
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.95) 100%);
+    pointer-events: none;
+}
+
+.product-card-content {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-direction: row-reverse;
+}
+
+.product-card-title {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 65%;
+    text-align: right;
+}
+
+.product-card-price {
+    color: #daa520;
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Page background & typography */
+* {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	background: linear-gradient(160deg, #0c1e3d 0%, #060e1f 60%, #0a1530 100%);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	color: #f0f2f5;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Navbar links */
+.navbar .nav-link {
+	font-weight: 500;
+	font-size: 0.88rem;
+	letter-spacing: 0.03em;
+	padding: 0.5rem 0.9rem !important;
+	transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+	opacity: 0.8;
+}
+
+.navbar .navbar-brand {
+	transition: opacity 0.2s ease;
+}
+
+.navbar .navbar-brand:hover {
+	opacity: 0.85;
+}
+
+/* Dropdown dark theme */
+.dropdown-menu {
+	background: rgba(10, 18, 38, 0.95);
+	border: 1px solid rgba(255,255,255,0.08);
+	border-radius: 12px;
+	backdrop-filter: blur(12px);
+	padding: 0.5rem 0;
+}
+
+.dropdown-item {
+	color: rgba(255,255,255,0.75);
+	font-size: 0.85rem;
+	padding: 0.5rem 1.2rem;
+	transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+	background: rgba(255,255,255,0.08);
+	color: #fff;
+}
+
+/* Navbar glassmorphism */
+.navbar {
+	background: rgba(6, 12, 28, 0.75) !important;
+	backdrop-filter: blur(12px) saturate(180%);
+	-webkit-backdrop-filter: blur(12px) saturate(180%);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	padding: 0.8rem 0;
+	z-index: 1100 !important;
+	overflow: visible !important;
+}
+
+.dropdown-menu {
+	background: rgba(10, 15, 30, 0.95) !important;
+	backdrop-filter: blur(20px);
+	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	border-radius: 12px !important;
+	padding: 0.5rem !important;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+	z-index: 2000 !important;
+}
+
+.register-section {
+	background: linear-gradient(180deg, rgba(9, 18, 38, 0.96), rgba(4, 11, 24, 0.96));
+	min-height: 100vh;
+}
+
+.register-card {
+	background: rgba(15, 26, 52, 0.92);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 1.5rem;
+}
+
+.register-image-card {
+	background: linear-gradient(180deg, rgba(18, 32, 62, 1), rgba(8, 15, 29, 1));
+	border-radius: 1.5rem;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.register-title {
+	font-size: 2rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	color: #f8fafc;
+	margin-bottom: 1.5rem;
+}
+
+.form-control-dark {
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	color: #f8fafc;
+}
+
+.form-control-dark:focus {
+	background: rgba(255, 255, 255, 0.08);
+	border-color: #3b6ce2;
+	box-shadow: 0 0 0 0.2rem rgba(59, 108, 226, 0.25);
+	color: #ffffff;
+}
+
+.form-label {
+	color: #c1c8d8;
+	font-weight: 500;
+}
+
+.btn-register {
+	background: linear-gradient(135deg, #1b4f9d, #0b2f62);
+	border: none;
+	color: #ffffff;
+	padding: 0.95rem 1.2rem;
+	border-radius: 1rem;
+	font-weight: 600;
+	box-shadow: 0 15px 30px rgba(5, 18, 45, 0.25);
+}
+
+.btn-register:hover {
+	background: linear-gradient(135deg, #264f9f, #10315f);
+}
+
+.register-footer {
+	color: #94a3b8;
+}
+
+.register-link {
+	color: #90caf9;
+}
+
+.register-link:hover {
+	color: #ffffff;
+}
+
+.register-image-card img {
+	border-radius: 1.5rem;
+	object-fit: cover;
+}
+
+/* Dark blue theme instead of red bootstrap danger styles */
+.bg-danger,
+.navbar.bg-danger,
+.toast-header.bg-danger,
+.btn.bg-danger,
+.btn-danger,
+.alert-danger {
+	background-color: #ff4d4d !important;
+	border-color: #ff4d4d !important;
+}
+
+.btn-danger,
+.btn.bg-danger {
+	color: #f8f9fa !important;
+}
+
+.btn-danger:hover,
+.btn.bg-danger:hover {
+	background-color: #12264e !important;
+	border-color: #12264e !important;
+}
+
+.text-danger {
+	color: #ff6b6b !important;
+}
+
+.category-card p {
+	font-weight: 500;
+	font-style: normal;
+	margin-bottom: 0;
+}
+
+/* Glass Table */
+.glass-table {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-table table {
+    margin-bottom: 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.glass-table th {
+    background: rgba(255, 255, 255, 0.05);
+    color: #daa520;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.glass-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.glass-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Premium Buttons */
+.btn-premium {
+    background: linear-gradient(135deg, #daa520, #b8860b);
+    color: #000 !important;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 12px 28px;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.4);
+    filter: brightness(1.1);
+}
+
+.btn-premium-outline {
+    background: transparent;
+    color: #daa520 !important;
+    border: 2px solid #daa520;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 10px 26px;
+    transition: all 0.3s ease;
+}
+
+.btn-premium-outline:hover {
+    background: rgba(218, 165, 32, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Glass Form */
+.glass-card {
+    background: rgba(10, 18, 38, 0.6);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.glass-form {
+    background: rgba(10, 18, 38, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.glass-form label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.glass-form .form-control {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 14px !important;
+    color: #fff !important;
+    padding: 12px 18px !important;
+}
+
+.glass-form .form-control:focus {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: #daa520 !important;
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.1) !important;
+}
+
+/* Modern Search Refined */
+/* Modern Search-pill UI (Header) */
+.modern-search-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    padding: 8px 8px 8px 28px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.modern-search-pill:focus-within {
+    border-color: rgba(218, 165, 32, 0.5);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Administrative Panel Visibility Fixes */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+}
+
+/* Ensure all table headers and text are highly visible */
+.table thead th {
+    color: #daa520 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.table td {
+    color: rgba(255, 255, 255, 0.9) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Brighter Status Badges */
+.bg-success-subtle {
+    background-color: rgba(0, 255, 127, 0.15) !important;
+}
+.text-success {
+    color: #00ff7f !important; /* Spring Green */
+    font-weight: 700 !important;
+}
+
+.bg-danger-subtle {
+    background-color: rgba(255, 77, 77, 0.15) !important;
+}
+.text-danger {
+    color: #ff4d4d !important; /* Brighter Red */
+    font-weight: 700 !important;
+}
+
+.bg-warning-subtle {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+}
+.text-warning {
+    color: #ffc107 !important; /* Amber */
+    font-weight: 700 !important;
+}
+
+/* DataTable visibility fixes */
+.dataTables_wrapper .dataTables_length, 
+.dataTables_wrapper .dataTables_filter, 
+.dataTables_wrapper .dataTables_info, 
+.dataTables_wrapper .dataTables_processing, 
+.dataTables_wrapper .dataTables_paginate {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: rgba(218, 165, 32, 0.2) !important;
+    border-color: #daa520 !important;
+    color: #fff !important;
+}
+
+/* Action Buttons Contrast */
+.btn-outline-warning {
+    color: #daa520 !important;
+    border-color: rgba(218, 165, 32, 0.4) !important;
+}
+.btn-outline-warning:hover {
+    background-color: #daa520 !important;
+    color: #000 !important;
+}
+
+.btn-outline-danger {
+    color: #ff4d4d !important;
+    border-color: rgba(255, 77, 77, 0.4) !important;
+}
+.btn-outline-danger:hover {
+    background-color: #ff4d4d !important;
+    color: #fff !important;
+}
+
+.btn-outline-success {
+    color: #00ff7f !important;
+    border-color: rgba(0, 255, 127, 0.4) !important;
+}
+.btn-outline-success:hover {
+    background-color: #00ff7f !important;
+    color: #000 !important;
+}
+
+/* Interactive Search UI */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-trigger {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #daa520;
+    transition: transform 0.3s ease;
+}
+
+.search-trigger:hover {
+    transform: scale(1.1);
+}
+
+.search-input-wrapper {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 0;
+}
+
+.search-input-wrapper.active {
+    width: 300px;
+    margin-left: 15px;
+}
+
+.search-input-wrapper input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: #fff;
+    padding: 8px 15px;
+    width: 100%;
+    outline: none;
+}
+
+/* Secondary text */
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Table fixes to prevent white on white */
+.table {
+    --bs-table-bg: transparent !important;
+    --bs-table-color: rgba(255,255,255,0.9) !important;
+}
+
+.table-hover tbody tr:hover {
+    --bs-table-hover-bg: rgba(255,255,255,0.02) !important;
+    --bs-table-hover-color: #fff !important;
+}
+
+.table-light, .table-light > th, .table-light > td {
+    background-color: rgba(255,255,255,0.05) !important;
+    color: #fff !important;
+}
+
+.text-muted {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.text-dark {
+    color: #fff !important;
+}
+
+/* DataTables Background Fix */
+table.dataTable.no-footer {
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+table.dataTable tbody tr {
+    background-color: transparent !important;
+}
+
+table.dataTable.display tbody tr.odd, 
+table.dataTable.stripe tbody tr.odd {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+table.dataTable.display tbody tr.even, 
+table.dataTable.stripe tbody tr.even {
+    background-color: transparent !important;
+}
+
+table.dataTable.hover tbody tr:hover, 
+table.dataTable.display tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Select Dropdown Styling */
+.form-select-dark {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.form-select-dark option {
+    background-color: #0c1e3d !important;
+    color: #fff !important;
+}
+
+/* Sticky Sidebar Utility */
+.sticky-sidebar {
+    position: sticky;
+    top: 100px;
+    z-index: 10;
+}
+
+
+/* Floating Animation */
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.floating-card {
+    animation: floating 4s ease-in-out infinite;
+}
+
+.floating-card-delayed {
+    animation: floating 4s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+/* Enhanced List Group for Sidebar */
+.list-group-item {
+    background: rgba(6, 12, 28, 0.4) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    padding: 15px 20px !important;
+    margin-bottom: 8px !important;
+    border-radius: 16px !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.list-group-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff !important;
+    transform: translateX(10px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.list-group-item.active {
+    background: linear-gradient(135deg, #daa520, #b8860b) !important;
+    color: #000 !important;
+    font-weight: 800 !important;
+    border-color: transparent !important;
+    box-shadow: 0 10px 25px rgba(218, 165, 32, 0.4) !important;
+    transform: scale(1.05);
+}
+
+/* ========================================
+   PREMIUM NOTIFICATIONS (SweetAlert2)
+   ======================================== */
+.swal2-popup.glass-card {
+    background: rgba(10, 20, 40, 0.85) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+.swal2-title {
+    color: #fff !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+}
+
+.swal2-html-container {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.swal2-confirm {
+    border-radius: 14px !important;
+    padding: 12px 35px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* Custom Toast Style */
+.swal2-toast {
+    border-radius: 18px !important;
+    padding: 12px 20px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.premium-toast {
+    border: 1px solid rgba(218, 165, 32, 0.4) !important;
+    box-shadow: 0 0 30px rgba(218, 165, 32, 0.2), 0 10px 40px rgba(0,0,0,0.8) !important;
+    margin-top: 85px !important; /* Move higher to align with page titles */
+    font-size: 1.1rem !important;
+}
+
+.swal-top-index {
+    z-index: 99999 !important;
+}
+
+.swal2-timer-progress-bar {
+    background: #daa520 !important;
+}
+/* Floating Add to Cart Button on Cards */
+.product-card-wrapper:hover .product-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.product-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-action-cart {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #daa520;
+    color: #000;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-action-cart:hover {
+    transform: scale(1.1) rotate(15deg);
+    background: #fff;
+    color: #daa520;
+    box-shadow: 0 8px 25px rgba(218, 165, 32, 0.4);
+}
+
+/* ========================================
+   RESPONSIVE OPTIMIZATIONS
+   ======================================== */
+@media (max-width: 768px) {
+    .navbar-collapse {
+        background: rgba(8, 15, 35, 0.95);
+        backdrop-filter: blur(20px);
+        margin: 10px -15px 0;
+        padding: 20px;
+        border-radius: 0 0 25px 25px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    /* Carousel Fix */
+    .carousel-img {
+        height: 220px !important;
+        object-fit: cover;
+    }
+
+    /* Prevent Sidebar Overlap */
+    .sticky-sidebar {
+        position: static !important;
+        margin-bottom: 2rem;
+    }
+    
+    .col-md-2, .col-md-10 {
+        width: 100% !important;
+    }
+
+    .container-fluid.px-5 {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    .nav-item {
+        margin-bottom: 5px;
+    }
+
+    .navbar-nav .dropdown-menu {
+        background: rgba(255,255,255,0.03) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        margin-top: 5px !important;
+    }
+
+    .align-items-center {
+        align-items: flex-start !important;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-sm.px-4.ms-lg-2 {
+        margin-left: 0 !important;
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-link.active.px-3.fw-bold {
+        padding-left: 0 !important;
+    }
+
+    .glass-card {
+        padding: 1.5rem !important;
+        border-radius: 20px !important;
+    }
+    
+    .navbar-brand { font-size: 1.1rem !important; }
+    .display-4 { font-size: 2rem !important; }
+    .display-5 { font-size: 1.6rem !important; }
+    
+    .product-card-img {
+        aspect-ratio: 1 / 1 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-card {
+        padding: 1.25rem !important;
+    }
+    
+    .product-card-title {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* ========================================
+   PREMIUM UI ENHANCEMENTS
+   ======================================== */
+
+/* 1. Custom Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #060c1c;
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #daa520, #b8860b);
+    border-radius: 10px;
+    border: 2px solid #060c1c;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #f5d76e;
+}
+
+/* 2. Reveal on Scroll Animation */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.reveal-on-scroll.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 3. Product View Image Frame */
+.product-view-frame {
+    background: #000;
+    border-radius: 24px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.05);
+    height: 500px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-view-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+    filter: brightness(1.1) contrast(1.05);
+}
+
+.product-view-frame:hover .product-view-img {
+    transform: scale(1.08);
+}
+
+/* 4. Subtle Glass Glow */
+.glass-card:hover {
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 15px rgba(218, 165, 32, 0.05) !important;
+}
+
+/* 5. Button Micro-interactions */
+.btn {
+    transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1) !important;
+}
+
+.btn-premium:active {
+    transform: scale(0.96);
+}

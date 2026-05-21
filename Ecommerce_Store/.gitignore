@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -38,26 +37,3 @@ build/
 src/main/resources/application.properties
 src/main/resources/application.properties
 src/main/resources/application.properties
-=======
-# Ignore Maven build directories
-**/target/
-
-# Ignore log files
-**/*.log
-**/app.log
-
-# IDE settings
-**/.idea/
-**/.vscode/
-**/*.iml
-
-# OS and system files
-.DS_Store
-Thumbs.db
-
-# Temp / Scratch files
-scratch/
-example_2_2.txt
-example_pdf_pages.txt
-
->>>>>>> 4ac935c73afb67ec6ab710422781ec73e21792f2

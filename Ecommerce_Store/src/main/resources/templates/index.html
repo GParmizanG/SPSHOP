@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{base::layout(~{::section})}">
+<head>
+<meta charset="UTF-8">
+<title>SPSHOP | Sports Nutrition Store</title>
+</head>
+<body>
+	<section>
+
+		<style>
+			.product-img {
+				width: 140px;
+				height: 140px;
+				object-fit: contain;
+			}
+
+			.carousel-img {
+				width: 100%;
+				height: 380px;
+				object-fit: cover;
+				object-position: center;
+			}
+
+			/* Modern section headings */
+			.section-heading {
+				text-align: center;
+				margin-bottom: 2rem;
+			}
+			.section-heading h2 {
+				font-weight: 700;
+				font-size: 1.6rem;
+				color: #ffffff;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				margin-bottom: 0.5rem;
+			}
+			.section-heading .heading-line {
+				width: 50px;
+				height: 3px;
+				background: linear-gradient(90deg, #daa520, #f5d76e);
+				border-radius: 2px;
+				margin: 0 auto;
+			}
+			.section-heading .heading-sub {
+				color: rgba(255,255,255,0.4);
+				font-size: 0.85rem;
+				margin-top: 0.4rem;
+			}
+		</style>
+
+		<!-- Start Carousel -->
+		<div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="border-radius: 0 0 24px 24px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.4);">
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img src="/Banner/banner.png" class="d-block w-100 carousel-img" alt="banner">
+				</div>
+			</div>
+		</div>
+
+		<!-- Start of Category with Image -->
+		<div class="container-fluid px-5" style="margin-top: 5rem;">
+			<div class="row g-4 align-items-center">
+				<!-- Decorative Image aligned with Sidebar (col-md-2) -->
+				<div class="col-md-2 text-center">
+					<img src="/img/Protein3.png" class="img-fluid floating-card" style="max-height: 380px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5)); transform: translateX(-20px);">
+				</div>
+
+				<!-- Categories Block aligned with Our Selection (col-md-10) -->
+				<div class="col-md-10">
+					<div class="glass-card">
+						<div class="section-heading mb-4">
+							<h2>Categories</h2>
+							<div class="heading-line"></div>
+							<p class="heading-sub">Browse by category</p>
+						</div>
+						<div class="row g-3 justify-content-center">
+							<div class="col-6 col-md-2" th:each="c:${latestSixActiveCategory}">
+								<a th:href="@{'/products?category='+${c.categoryName}}" style="text-decoration:none;">
+									<div class="category-card">
+										<img th:src="@{'/category-img/'+${c.id}}" class="category-img" th:alt="${c.categoryName}">
+										<div class="category-overlay"></div>
+										<p class="category-title" th:text="${c.categoryName}"></p>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Products with Sidebar -->
+		<div class="container-fluid px-5" style="margin-top: 5rem; margin-bottom: 7rem;">
+			<div class="row g-5">
+				<!-- Sidebar -->
+				<div class="col-md-2 sticky-sidebar">
+					<div class="glass-card p-4">
+						<p class="fs-5 fw-bold mb-4" style="letter-spacing: 0.1em; color: #fff; text-transform: uppercase; font-size: 0.8rem !important;">Explore Categories</p>
+						<div class="list-group border-0">
+							<a href="/products" class="list-group-item list-group-item-action border-0"> 
+								<i class="fa-solid fa-layer-group me-2"></i> All Products 
+							</a> 
+							
+							<a th:each="c, iter : ${allActiveCategory}" 
+							   th:href="@{'/products?category='+${c.categoryName}}"
+							   class="list-group-item list-group-item-action border-0">
+							   <i class="fa-solid fa-tag me-2" style="font-size: 0.8rem; opacity: 0.5;"></i> <span th:text="${c.categoryName}"></span>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- Product Grid (restored to col-md-10) -->
+				<div class="col-md-10">
+					<div class="glass-card">
+						<div class="section-heading mb-5">
+							<h2>Our Selection</h2>
+							<div class="heading-line"></div>
+							<p class="heading-sub">Handpicked premium nutrition</p>
+						</div>
+						
+						<div class="row g-4">
+							<div class="col-6 col-md-4 col-lg-3 reveal-on-scroll" th:each="p, iter : ${latestEightActiveProducts}">
+								<div class="product-card-wrapper position-relative">
+									<a th:href="@{'/product/'+${p.id}}" style="text-decoration:none;">
+										<div class="product-card">
+											<img th:src="@{'/product-img/'+${p.id}}" class="product-card-img" th:alt="${p.productTitle}">
+											<div class="product-overlay"></div>
+											<div class="product-card-content">
+												<p class="product-card-title" th:text="${p.productTitle}"></p>
+												<p class="product-card-price">&euro;<span th:text="${p.discountPrice}"></span></p>
+											</div>
+										</div>
+									</a>
+									<!-- Floating Add to Cart -->
+									<div class="product-actions">
+										<th:block th:if="${currentLoggedInUserDetails == null}">
+											<a href="/signin" class="btn-action-cart" title="Login to Add to Cart">
+												<i class="fa-solid fa-cart-plus"></i>
+											</a>
+										</th:block>
+										<th:block th:if="${currentLoggedInUserDetails != null && currentLoggedInUserDetails.role == 'ROLE_USER'}">
+											<button class="btn-action-cart add-to-cart-btn" th:data-id="${p.id}" title="Add to Cart">
+												<i class="fa-solid fa-cart-plus"></i>
+											</button>
+										</th:block>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="text-center mt-5">
+							<a href="/products" class="btn btn-premium">View All Products <i class="fa-solid fa-arrow-right ms-2"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+</body>
+</html>
