@@ -13,3 +13,9 @@
 # OS and system files
 .DS_Store
 Thumbs.db
+
+# Temp / Scratch files
+scratch/
+example_2_2.txt
+example_pdf_pages.txt
+
